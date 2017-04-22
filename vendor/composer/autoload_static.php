@@ -330,6 +330,9 @@ class ComposerStaticInite99a8f0a379f44b73c5fabe858b0014d
     );
 
     public static $classMap = array (
+        'AddForeignToArticles' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_120538_add_foreign_to_articles.php',
+        'AddForeignToFollowers' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_115717_add_foreign_to_followers.php',
+        'AddForeignToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_115443_add_foreign_to_users.php',
         'CreateArticleTypesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022510_create_article_types_table.php',
         'CreateArticlesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022407_create_articles_table.php',
         'CreateCollectsTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022749_create_collects_table.php',

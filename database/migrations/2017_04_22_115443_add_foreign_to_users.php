@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateCollectsTable extends Migration
+class AddForeignToUsers extends Migration
 {
     /**
      * Run the migrations.
@@ -12,12 +12,11 @@ class CreateCollectsTable extends Migration
      */
     public function up()
     {
-        Schema::create('collects', function (Blueprint $table) {
-            // id
-            $table->increments('id');
-
-            // 时间戳
-            $table->timestamps();
+        /**
+         * 添加用户表的外键
+         */
+        Schema::table('users', function (Blueprint $table) {
+            $table->foreign('role')->references('id')->on('roles');
         });
     }
 
@@ -28,6 +27,8 @@ class CreateCollectsTable extends Migration
      */
     public function down()
     {
-        Schema::drop('collects');
+        Schema::table('users', function (Blueprint $table) {
+            //
+        });
     }
 }

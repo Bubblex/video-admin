@@ -20,10 +20,10 @@ class CreateFollowersTable extends Migration
             $table->increments('id');
 
             // 被关注的人
-            $table->integer('star');
+            $table->integer('star')->unsigned();
 
             // 关注者
-            $table->integer('follower');
+            $table->integer('follower')->unsigned();
 
             // 时间戳
             $table->timestamps();

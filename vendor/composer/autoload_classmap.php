@@ -6,6 +6,9 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
+    'AddForeignToArticles' => $baseDir . '/database/migrations/2017_04_22_120538_add_foreign_to_articles.php',
+    'AddForeignToFollowers' => $baseDir . '/database/migrations/2017_04_22_115717_add_foreign_to_followers.php',
+    'AddForeignToUsers' => $baseDir . '/database/migrations/2017_04_22_115443_add_foreign_to_users.php',
     'CreateArticleTypesTable' => $baseDir . '/database/migrations/2017_04_22_022510_create_article_types_table.php',
     'CreateArticlesTable' => $baseDir . '/database/migrations/2017_04_22_022407_create_articles_table.php',
     'CreateCollectsTable' => $baseDir . '/database/migrations/2017_04_22_022749_create_collects_table.php',

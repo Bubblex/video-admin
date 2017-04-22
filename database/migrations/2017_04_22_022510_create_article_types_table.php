@@ -16,7 +16,16 @@ class CreateArticleTypesTable extends Migration
          * 文章类型表
          */
         Schema::create('article_types', function (Blueprint $table) {
+            // id
             $table->increments('id');
+
+            // 分类名称
+            $table->string('type_name');
+
+            // 分类说明
+            $table->string('type_explanation');
+
+            // 时间戳
             $table->timestamps();
         });
     }

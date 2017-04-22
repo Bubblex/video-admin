@@ -23,7 +23,7 @@ class CreateArticlesTable extends Migration
             $table->string('title');
 
             // 文章作者
-            $table->string('author');
+            $table->integer('author')->unsigned();
 
             // 文章封面图
             $table->string('cover');
