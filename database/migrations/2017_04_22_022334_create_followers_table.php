@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRolesTable extends Migration
+class CreateFollowersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,20 @@ class CreateRolesTable extends Migration
     public function up()
     {
         /**
-         * 角色表
+         * 关注表
          */
-        Schema::create('roles', function (Blueprint $table) {
+        Schema::create('followers', function (Blueprint $table) {
             // id
             $table->increments('id');
 
-            // 角色名称
-            $table->string('role_name');
+            // 被关注的人
+            $table->integer('star');
 
-            // 角色说明
-            $table->string('role_explanation')->nullable();
+            // 关注者
+            $table->integer('follower');
+
+            // 时间戳
+            $table->timestamps();
         });
     }
 
@@ -34,6 +37,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('roles');
+        Schema::drop('followers');
     }
 }

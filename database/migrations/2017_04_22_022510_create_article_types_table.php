@@ -3,7 +3,7 @@
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateRolesTable extends Migration
+class CreateArticleTypesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,11 @@ class CreateRolesTable extends Migration
     public function up()
     {
         /**
-         * 角色表
+         * 文章类型表
          */
-        Schema::create('roles', function (Blueprint $table) {
-            // id
+        Schema::create('article_types', function (Blueprint $table) {
             $table->increments('id');
-
-            // 角色名称
-            $table->string('role_name');
-
-            // 角色说明
-            $table->string('role_explanation')->nullable();
+            $table->timestamps();
         });
     }
 
@@ -34,6 +28,6 @@ class CreateRolesTable extends Migration
      */
     public function down()
     {
-        Schema::drop('roles');
+        Schema::drop('article_types');
     }
 }

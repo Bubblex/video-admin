@@ -12,12 +12,15 @@ class CreateUsersTable extends Migration
      */
     public function up()
     {
+        /**
+         * 用户表
+         */
         Schema::create('users', function (Blueprint $table) {
             // id
             $table->increments('id');
 
             // 账号
-            $table->string('account', 16);
+            $table->string('account', 16)->unique();
 
             // 昵称
             $table->string('nickname', 16);
@@ -29,26 +32,25 @@ class CreateUsersTable extends Migration
             $table->string('avatar');
 
             // 简介
-            $table->string('summary');
+            $table->string('summary')->nullable();
 
             // 账号角色
-            $table->integer('role');
-            $table->foreign('role')->references('id')->on('roles');
+            $table->integer('role')->default(1);
 
             // 讲师认证状态
-            $table->integer('authentication');
+            $table->integer('authentication')->default(1);
 
             // 账户状态
-            $table->integer('status');
+            $table->integer('status')->default(1);
 
             // 证件号码
-            $table->string('card_number');
+            $table->string('card_number')->nullable();
 
             // 证件照正面
-            $table->string('card_front_image');
+            $table->string('card_front_image')->nullable();
 
             // 证件照反面
-            $table->string('card_back_image');
+            $table->string('card_back_image')->nullable();
 
             // 时间戳
             $table->timestamps();

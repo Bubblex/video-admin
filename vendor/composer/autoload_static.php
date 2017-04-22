@@ -330,8 +330,16 @@ class ComposerStaticInite99a8f0a379f44b73c5fabe858b0014d
     );
 
     public static $classMap = array (
-        'CreateRolesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_20_144048_create_roles_table.php',
-        'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_20_142645_create_users_table.php',
+        'CreateArticleTypesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022510_create_article_types_table.php',
+        'CreateArticlesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022407_create_articles_table.php',
+        'CreateCollectsTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022749_create_collects_table.php',
+        'CreateCommentsTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022606_create_comments_table.php',
+        'CreateFollowersTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022334_create_followers_table.php',
+        'CreateMessagesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022532_create_messages_table.php',
+        'CreateReportsTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022722_create_reports_table.php',
+        'CreateRolesTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_20_144434_create_roles_table.php',
+        'CreateUsersTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_20_144450_create_users_table.php',
+        'CreateVideosTable' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_022700_create_videos_table.php',
         'DatabaseSeeder' => __DIR__ . '/../..' . '/database/seeds/DatabaseSeeder.php',
         'File_Iterator' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Iterator.php',
         'File_Iterator_Facade' => __DIR__ . '/..' . '/phpunit/php-file-iterator/src/Facade.php',
