@@ -51,23 +51,20 @@ class ListenerMakeCommand extends GeneratorCommand
      */
     protected function buildClass($name)
     {
-        $stub = parent::buildClass($name);
-
         $event = $this->option('event');
 
-        if (! Str::startsWith($event, $this->laravel->getNamespace())) {
+        if (! Str::startsWith($event, $this->laravel->getNamespace()) &&
+            ! Str::startsWith($event, 'Illuminate')) {
             $event = $this->laravel->getNamespace().'Events\\'.$event;
         }
 
         $stub = str_replace(
-            'DummyEvent', class_basename($event), $stub
+            'DummyEvent', class_basename($event), parent::buildClass($name)
         );
 
-        $stub = str_replace(
+        return str_replace(
             'DummyFullEvent', $event, $stub
         );
-
-        return $stub;
     }
 
     /**
@@ -82,6 +79,17 @@ class ListenerMakeCommand extends GeneratorCommand
         } else {
             return __DIR__.'/stubs/listener.stub';
         }
+    }
+
+    /**
+     * Determine if the class already exists.
+     *
+     * @param  string  $rawName
+     * @return bool
+     */
+    protected function alreadyExists($rawName)
+    {
+        return class_exists($rawName);
     }
 
     /**
@@ -103,7 +111,7 @@ class ListenerMakeCommand extends GeneratorCommand
     protected function getOptions()
     {
         return [
-            ['event', null, InputOption::VALUE_REQUIRED, 'The event class being listened for.'],
+            ['event', 'e', InputOption::VALUE_REQUIRED, 'The event class being listened for.'],
 
             ['queued', null, InputOption::VALUE_NONE, 'Indicates the event listener should be queued.'],
         ];

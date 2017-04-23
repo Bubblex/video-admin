@@ -38,13 +38,31 @@ class CallQueuedHandler
             $job, unserialize($data['command'])
         );
 
-        $this->dispatcher->dispatchNow($command, function ($handler) use ($job) {
-            $this->setJobInstanceIfNecessary($job, $handler);
-        });
+        $this->dispatcher->dispatchNow(
+            $command, $handler = $this->resolveHandler($job, $command)
+        );
 
         if (! $job->isDeletedOrReleased()) {
             $job->delete();
         }
+    }
+
+    /**
+     * Resolve the handler for the given command.
+     *
+     * @param  \Illuminate\Contracts\Queue\Job  $job
+     * @param  mixed  $command
+     * @return mixed
+     */
+    protected function resolveHandler($job, $command)
+    {
+        $handler = $this->dispatcher->getCommandHandler($command) ?: null;
+
+        if ($handler) {
+            $this->setJobInstanceIfNecessary($job, $handler);
+        }
+
+        return $handler;
     }
 
     /**
@@ -56,7 +74,7 @@ class CallQueuedHandler
      */
     protected function setJobInstanceIfNecessary(Job $job, $instance)
     {
-        if (in_array('Illuminate\Queue\InteractsWithQueue', class_uses_recursive(get_class($instance)))) {
+        if (in_array(InteractsWithQueue::class, class_uses_recursive(get_class($instance)))) {
             $instance->setJob($job);
         }
 
@@ -66,15 +84,18 @@ class CallQueuedHandler
     /**
      * Call the failed method on the job instance.
      *
+     * The exception that caused the failure will be passed.
+     *
      * @param  array  $data
+     * @param  \Exception  $e
      * @return void
      */
-    public function failed(array $data)
+    public function failed(array $data, $e)
     {
-        $handler = $this->dispatcher->resolveHandler($command = unserialize($data['command']));
+        $command = unserialize($data['command']);
 
-        if (method_exists($handler, 'failed')) {
-            call_user_func([$handler, 'failed'], $command);
+        if (method_exists($command, 'failed')) {
+            $command->failed($e);
         }
     }
 }

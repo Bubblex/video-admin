@@ -142,7 +142,6 @@ class Response
         303 => 'See Other',
         304 => 'Not Modified',
         305 => 'Use Proxy',
-        306 => 'Reserved',
         307 => 'Temporary Redirect',
         308 => 'Permanent Redirect',    // RFC7238
         400 => 'Bad Request',
@@ -158,10 +157,10 @@ class Response
         410 => 'Gone',
         411 => 'Length Required',
         412 => 'Precondition Failed',
-        413 => 'Request Entity Too Large',
-        414 => 'Request-URI Too Long',
+        413 => 'Payload Too Large',
+        414 => 'URI Too Long',
         415 => 'Unsupported Media Type',
-        416 => 'Requested Range Not Satisfiable',
+        416 => 'Range Not Satisfiable',
         417 => 'Expectation Failed',
         418 => 'I\'m a teapot',                                               // RFC2324
         421 => 'Misdirected Request',                                         // RFC7540
@@ -187,6 +186,30 @@ class Response
         511 => 'Network Authentication Required',                             // RFC6585
     );
 
+    private static $deprecatedMethods = array(
+        'setDate', 'getDate',
+        'setExpires', 'getExpires',
+        'setLastModified', 'getLastModified',
+        'setProtocolVersion', 'getProtocolVersion',
+        'setStatusCode', 'getStatusCode',
+        'setCharset', 'getCharset',
+        'setPrivate', 'setPublic',
+        'getAge', 'getMaxAge', 'setMaxAge', 'setSharedMaxAge',
+        'getTtl', 'setTtl', 'setClientTtl',
+        'getEtag', 'setEtag',
+        'hasVary', 'getVary', 'setVary',
+        'isInvalid', 'isSuccessful', 'isRedirection',
+        'isClientError', 'isOk', 'isForbidden',
+        'isNotFound', 'isRedirect', 'isEmpty',
+    );
+    private static $deprecationsTriggered = array(
+        __CLASS__ => true,
+        BinaryFileResponse::class => true,
+        JsonResponse::class => true,
+        RedirectResponse::class => true,
+        StreamedResponse::class => true,
+    );
+
     /**
      * Constructor.
      *
@@ -202,8 +225,27 @@ class Response
         $this->setContent($content);
         $this->setStatusCode($status);
         $this->setProtocolVersion('1.0');
+
+        // Deprecations
+        $class = get_class($this);
+        if ($this instanceof \PHPUnit_Framework_MockObject_MockObject || $this instanceof \Prophecy\Doubler\DoubleInterface) {
+            $class = get_parent_class($class);
+        }
+        if (isset(self::$deprecationsTriggered[$class])) {
+            return;
+        }
+
+        self::$deprecationsTriggered[$class] = true;
+        foreach (self::$deprecatedMethods as $method) {
+            $r = new \ReflectionMethod($class, $method);
+            if (__CLASS__ !== $r->getDeclaringClass()->getName()) {
+                @trigger_error(sprintf('Extending %s::%s() in %s is deprecated since version 3.2 and won\'t be supported anymore in 4.0 as it will be final.', __CLASS__, $method, $class), E_USER_DEPRECATED);
+            }
+        }
+
+        /* RFC2616 - 14.18 says all Responses need to have a Date */
         if (!$this->headers->has('Date')) {
-            $this->setDate(\DateTime::createFromFormat('U', time(), new \DateTimeZone('UTC')));
+            $this->setDate(new \DateTime(null, new \DateTimeZone('UTC')));
         }
     }
 
@@ -311,7 +353,7 @@ class Response
         }
 
         // Check if we need to send extra expire info headers
-        if ('1.0' == $this->getProtocolVersion() && 'no-cache' == $this->headers->get('Cache-Control')) {
+        if ('1.0' == $this->getProtocolVersion() && false !== strpos($this->headers->get('Cache-Control'), 'no-cache')) {
             $this->headers->set('pragma', 'no-cache');
             $this->headers->set('expires', -1);
         }
@@ -333,10 +375,15 @@ class Response
             return $this;
         }
 
+        /* RFC2616 - 14.18 says all Responses need to have a Date */
+        if (!$this->headers->has('Date')) {
+            $this->setDate(\DateTime::createFromFormat('U', time()));
+        }
+
         // headers
         foreach ($this->headers->allPreserveCase() as $name => $values) {
             foreach ($values as $value) {
-                header($name.': '.$value, false);
+                header($name.': '.$value, false, $this->statusCode);
             }
         }
 
@@ -345,7 +392,11 @@ class Response
 
         // cookies
         foreach ($this->headers->getCookies() as $cookie) {
-            setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+            if ($cookie->isRaw()) {
+                setrawcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+            } else {
+                setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+            }
         }
 
         return $this;
@@ -612,7 +663,16 @@ class Response
      */
     public function getDate()
     {
-        return $this->headers->getDate('Date', new \DateTime());
+        /*
+            RFC2616 - 14.18 says all Responses need to have a Date.
+            Make sure we provide one even if it the header
+            has been removed in the meantime.
+         */
+        if (!$this->headers->has('Date')) {
+            $this->setDate(\DateTime::createFromFormat('U', time()));
+        }
+
+        return $this->headers->getDate('Date');
     }
 
     /**
@@ -1149,6 +1209,7 @@ class Response
     {
         $status = ob_get_status(true);
         $level = count($status);
+        // PHP_OUTPUT_HANDLER_* are not defined on HHVM 3.3
         $flags = defined('PHP_OUTPUT_HANDLER_REMOVABLE') ? PHP_OUTPUT_HANDLER_REMOVABLE | ($flush ? PHP_OUTPUT_HANDLER_FLUSHABLE : PHP_OUTPUT_HANDLER_CLEANABLE) : -1;
 
         while ($level-- > $targetLevel && ($s = $status[$level]) && (!isset($s['del']) ? !isset($s['flags']) || $flags === ($s['flags'] & $flags) : $s['del'])) {
