@@ -52,6 +52,12 @@ class CreateUsersTable extends Migration
             // 证件照反面
             $table->string('card_back_image')->nullable();
 
+            // token
+            $table->string('token')->nullable();
+
+            // token 过期时间
+            $table->string('token_expired')->nullable();
+
             // 时间戳
             $table->timestamps();
         });
