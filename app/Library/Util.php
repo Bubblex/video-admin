@@ -29,4 +29,9 @@ class Util
 
         return '缺少参数：'.$message;
     }
+
+    // 生成 token
+    static function generateToken() {
+        return md5(rand(10000, 100000000));
+    }
 }

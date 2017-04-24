@@ -35,7 +35,7 @@ class CreateUsersTable extends Migration
             $table->string('summary')->nullable();
 
             // 账号角色
-            $table->integer('role')->unsigned()->default(1);
+            $table->integer('role_id')->unsigned()->default(1);
 
             // 讲师认证状态
             $table->integer('authentication')->default(1);

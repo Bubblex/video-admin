@@ -16,7 +16,7 @@ class AddForeignToUsers extends Migration
          * 添加用户表的外键
          */
         Schema::table('users', function (Blueprint $table) {
-            $table->foreign('role')->references('id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 

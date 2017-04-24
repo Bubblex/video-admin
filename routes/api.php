@@ -18,7 +18,9 @@ use Illuminate\Http\Request;
 // });
 
 Route::group(['prefix' => 'account', 'namespace' => 'Account'], function() {
+    // 注册接口
     Route::post('register', 'UserController@postRegister');
+    Route::post('login', 'UserController@postLogin');
 });
 
 Route::get('login', function() {
