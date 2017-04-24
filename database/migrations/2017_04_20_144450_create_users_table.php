@@ -29,7 +29,7 @@ class CreateUsersTable extends Migration
             $table->string('password', 64);
 
             // 头像
-            $table->string('avatar');
+            $table->string('avatar')->nullable();
 
             // 简介
             $table->string('summary')->nullable();

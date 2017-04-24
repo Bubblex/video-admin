@@ -13,6 +13,16 @@ use Illuminate\Http\Request;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+// Route::middleware('auth:api')->get('/api/user', function (Request $request) {
+//     return $request->user();
+// });
+
+Route::group(['prefix' => 'account', 'namespace' => 'Account'], function() {
+    Route::post('register', 'UserController@postRegister');
+});
+
+Route::get('login', function() {
+    return response()->json([
+        'errcode' => 1
+    ]);
 });
