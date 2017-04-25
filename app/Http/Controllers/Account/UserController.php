@@ -150,7 +150,10 @@ class UserController extends Controller
             'status' => $user->status,
 
             'articles_num' => $user->articles->count(),
-            'videos_num' => $user->videos->count()
+            'videos_num' => $user->videos->count(),
+            // TODO: 结果有可能不准确，待测试
+            'stars_num' => $user->stars->count(),
+            'followers_num' => $user->stars->count()
         ]);
     }
 }

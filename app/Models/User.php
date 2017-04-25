@@ -20,4 +20,12 @@ class User extends Model
     public function articles() {
         return $this->hasMany('App\Models\Article', 'author');
     }
+
+    public function stars() {
+        return $this->hasMany('App\Models\Follower', 'star');
+    }
+
+    public function followers() {
+        return $this->hasMany('App\Models\Follower', 'follower');
+    }
 }
