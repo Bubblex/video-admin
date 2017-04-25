@@ -51,6 +51,12 @@ class UserController extends Controller
         return Util::responseData(1, '注册成功');
     }
 
+    /**
+     * 登录
+     *
+     * @param Request $request
+     * @return void
+     */
     public function postLogin(Request $request) {
         $params = ['account', 'password'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -95,6 +101,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 重新设置密码
+     *
+     * @param Request $request
+     * @return void
+     */
     public function postReset(Request $request) {
         $params = ['password', 'new_password', 'confirm_password'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -125,6 +137,12 @@ class UserController extends Controller
         return Util::responseData(1, '密码修改成功');
     }
 
+    /**
+     * 通过 token 获取个人信息
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getUserInfo(Request $request) {
         $token = $request->token;
         $user = User::where('token', $token)->first();
@@ -157,6 +175,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 申请成为讲师
+     *
+     * @param Request $request
+     * @return void
+     */
     public function applyLecturer(Request $request) {
         $params = ['card_number', 'card_front_image', 'card_back_image'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -188,5 +212,54 @@ class UserController extends Controller
         $user->save();
 
         return Util::responseData(1, '申请成功，请耐心等待审核通过');
+    }
+
+    /**
+     * 通过 id 获取用户基本信息
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getUserInfoById(Request $request) {
+        $params = ['id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return Util::responseData(200, '该用户不存在');
+        }
+
+        if ($user->status == 2) {
+            return Util::responseData(201, '该用户已禁用');
+        }
+
+        if ($user->status == 3) {
+            return Util::responseData(202, '该账户已删除');
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'id' => $user->id,
+            'account' => $user->account,
+            'nickname' => $user->nickname,
+            'avatar' => $user->avatar,
+            'summary' => $user->summary,
+            'role_id' => $user->role_id,
+            'role_name' => $user->role->role_name,
+            'status' => $user->status,
+            'created_at' => $user->created_at,
+
+            'articles_num' => $user->articles->count(),
+            'videos_num' => $user->videos->count(),
+            // TODO: 结果有可能不准确，待测试
+            'stars_num' => $user->stars->count(),
+            'followers_num' => $user->stars->count()
+        ]);
     }
 }

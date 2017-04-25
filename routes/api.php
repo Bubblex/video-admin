@@ -37,4 +37,6 @@ Route::group(['namespace' => 'Account'], function() {
         // 申请成为讲师
         Route::post('apply/lecturer', 'UserController@applyLecturer');
     });
+
+    Route::post('user/basic', 'UserController@getUserInfoById');
 });
