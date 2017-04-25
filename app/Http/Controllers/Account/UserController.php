@@ -94,4 +94,34 @@ class UserController extends Controller
             ]
         ]);
     }
+
+    public function postReset(Request $request) {
+        $params = ['password', 'new_password', 'confirm_password'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $token = $request->token;
+        $password = $request->password;
+        $new_password = $request->new_password;
+        $confirm_password = $request->confirm_password;
+
+        if ($new_password != $confirm_password) {
+            return Util::responseData(200, '两次密码不一致');
+        }
+
+        $user = User::where('token', $request->token)->first();
+
+        if ($password != $user->password) {
+            return Util::responseData(201, '原密码不正确');
+        }
+
+        $user->password = $password;
+        $user->save();
+        
+        return Util::responseData(1, '密码修改成功');
+    }
 }

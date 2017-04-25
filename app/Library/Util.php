@@ -27,7 +27,7 @@ class Util
             return false;
         }
 
-        return '缺少参数：'.$message;
+        return '缺少参数：'.substr($message, 0, -1);
     }
 
     // 生成 token
