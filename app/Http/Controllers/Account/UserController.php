@@ -156,4 +156,37 @@ class UserController extends Controller
             'followers_num' => $user->stars->count()
         ]);
     }
+
+    public function applyLecturer(Request $request) {
+        $params = ['card_number', 'card_front_image', 'card_back_image'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $token = $request->token;
+        $card_number = $request->card_number;
+        $card_front_image = $request->card_front_image;
+        $card_back_image = $request->card_back_image;
+
+        $user = User::where('token', $token)->first();
+
+        if ($user->role_id == 2) {
+            return Util::responseData(200, '您已经是讲师身份，无需再次申请');
+        }
+
+        if ($user->authentication == 2) {
+            return Util::responseData(201, '正在审核您的资料，请耐心等待');
+        }
+
+        $user->card_back_image = $card_back_image;
+        $user->card_front_image = $card_front_image;
+        $user->card_back_image = $card_back_image;
+        $user->authentication = 2;
+        $user->save();
+
+        return Util::responseData(1, '申请成功，请耐心等待审核通过');
+    }
 }

@@ -15,5 +15,13 @@ class RolesTableSeeder extends Seeder
         DB::table('roles')->insert([
             'role_name' => '普通用户'
         ]);
+
+        DB::table('roles')->insert([
+            'role_name' => '讲师'
+        ]);
+
+        DB::table('roles')->insert([
+            'role_name' => '管理员'
+        ]);
     }
 }

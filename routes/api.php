@@ -33,5 +33,8 @@ Route::group(['namespace' => 'Account'], function() {
     Route::group(['middleware' => ['checkToken']], function() {
         // 获取用户完整信息
         Route::post('user/info', 'UserController@getUserInfo');
+
+        // 申请成为讲师
+        Route::post('apply/lecturer', 'UserController@applyLecturer');
     });
 });
