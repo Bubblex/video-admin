@@ -12,4 +12,12 @@ class User extends Model
     public function role() {
         return $this->belongsTo('App\Models\Role');
     }
+
+    public function videos() {
+        return $this->hasMany('App\Models\Video', 'author');
+    }
+
+    public function articles() {
+        return $this->hasMany('App\Models\Article', 'author');
+    }
 }

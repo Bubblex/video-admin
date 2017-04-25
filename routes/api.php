@@ -16,19 +16,22 @@ use Illuminate\Http\Request;
 // Route::middleware('auth:api')->get('/api/user', function (Request $request) {
 //     return $request->user();
 // });
+Route::group(['namespace' => 'Account'], function() {
+    Route::group(['prefix' => 'account'], function() {
+        // 注册接口
+        Route::post('register', 'UserController@postRegister');
 
-Route::group(['prefix' => 'account', 'namespace' => 'Account'], function() {
-    // 注册接口
-    Route::post('register', 'UserController@postRegister');
-    Route::post('login', 'UserController@postLogin');
+        // 登录
+        Route::post('login', 'UserController@postLogin');
+
+        Route::group(['middleware' => ['checkToken']], function() {
+            // 重置密码
+            Route::post('reset', 'UserController@postReset');
+        });
+    });
 
     Route::group(['middleware' => ['checkToken']], function() {
-        Route::post('reset', 'UserController@postReset');
+        // 获取用户完整信息
+        Route::post('user/info', 'UserController@getUserInfo');
     });
-});
-
-Route::get('login', function() {
-    return response()->json([
-        'errcode' => 1
-    ]);
 });

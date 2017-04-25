@@ -119,9 +119,38 @@ class UserController extends Controller
             return Util::responseData(201, '原密码不正确');
         }
 
-        $user->password = $password;
+        $user->password = $new_password;
         $user->save();
-        
+
         return Util::responseData(1, '密码修改成功');
+    }
+
+    public function getUserInfo(Request $request) {
+        $token = $request->token;
+        $user = User::where('token', $token)->first();
+
+        if (!$user) {
+            return Util::responseData(0, '获取用户数据失败');
+        }
+
+        return Util::responseData(1, '获取用户数据成功', [
+            'id' => $user->id,
+            'account' => $user->account,
+            'nickname' => $user->nickname,
+            'avatar' => $user->avatar,
+            'summary' => $user->summary,
+            'role_id' => $user->role_id,
+            'role_name' => $user->role->role_name,
+            'card_number' => $user->card_number,
+            'card_front_image' => $user->card_front_image,
+            'card_back_image' => $user->card_back_image,
+            'created_at' => $user->created_at,
+
+            'authentication' => $user->authentication,
+            'status' => $user->status,
+
+            'articles_num' => $user->articles->count(),
+            'videos_num' => $user->videos->count()
+        ]);
     }
 }
