@@ -8,7 +8,7 @@ class Util
     static function responseData($code, $message, $data = null) {
         return response()->json([
             'errcode' => $code,
-            'message' => $message,
+            'errmsg' => $message,
             'data' => $data
         ]);
     }
