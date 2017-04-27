@@ -32,4 +32,8 @@ class User extends Model
     public function userStars() {
         return $this->belongsToMany('App\Models\User', 'followers', 'follower', 'star')->withTimestamps();
     }
+
+    public function userFollowers() {
+        return $this->belongsToMany('App\Models\User', 'followers', 'star', 'follower')->withTimestamps();
+    }
 }

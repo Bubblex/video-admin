@@ -41,4 +41,6 @@ Route::group(['namespace' => 'Account'], function() {
     Route::post('user/basic', 'UserController@getUserInfoById');
 
     Route::post('stars', 'UserController@getUserStars');
+
+    Route::post('followers', 'UserController@getUserFollowers');
 });

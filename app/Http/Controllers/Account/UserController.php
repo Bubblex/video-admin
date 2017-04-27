@@ -314,4 +314,31 @@ class UserController extends Controller
             ]
         ]);
     }
+
+    public function getUserFollowers(Request $request) {
+        $params = ['id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
+
+        $followers = User::where('id', $id)
+            ->first()
+            ->userStars()
+            ->paginate($pageSize, ['users.id', 'nickname', 'avatar', 'summary']);
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $followers->all(),
+            'pagination' => [
+                'total' => $followers->total(),
+                'current' => $followers->currentPage(),
+                'pageSize' => $followers->perPage()
+            ]
+        ]);
+    }
 }
