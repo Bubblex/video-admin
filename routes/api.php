@@ -38,9 +38,15 @@ Route::group(['namespace' => 'Account'], function() {
         Route::post('apply/lecturer', 'UserController@applyLecturer');
     });
 
+    // 获取用户基础数据
     Route::post('user/basic', 'UserController@getUserInfoById');
 
+    // 获取用户关注列表
     Route::post('stars', 'UserController@getUserStars');
 
+    // 获取用户粉丝列表
     Route::post('followers', 'UserController@getUserFollowers');
+
+    // 关注用户
+    Route::post('follow', 'UserController@followUser');
 });

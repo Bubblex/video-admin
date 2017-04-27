@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
 use App\Models\User;
+use App\Models\Follower;
 
 use App\Library\Util;
 
@@ -340,5 +341,36 @@ class UserController extends Controller
                 'pageSize' => $followers->perPage()
             ]
         ]);
+    }
+
+    public function followUser(Request $request) {
+        $params = ['id', 'token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+
+        if (!User::where('id', $id)->first()) {
+            Util::responseData(200, '没有该用户');
+        }
+
+        $token = $request->token;
+        $user = User::where('token', $token)->first();
+        $follower_id = $user->id;
+
+        if (Follower::where('star', $id)->where('follower', $follower_id)->first()) {
+            return Util::responseData(201, '您已关注该用户');
+        }
+
+        $follower = new Follower;
+        $follower->star = $id;
+        $follower->follower = $follower_id;
+        $follower->save();
+
+        return Util::responseData(1, '关注成功');
     }
 }
