@@ -262,4 +262,56 @@ class UserController extends Controller
             'followers_num' => $user->stars->count()
         ]);
     }
+
+    public function updateUserInfo(Request $request) {
+        $token = $request->token;
+        $avatar = $request->avatar;
+        $summary = $request->summary;
+        $nickname = $request->nickname;
+
+        $user = User::where('token', $token)->first();
+
+        if ($avatar) {
+            $user->avatar = $avatar;
+        }
+
+        if ($summary) {
+            $user->summary = $summary;
+        }
+
+        if ($nickname) {
+            $user->nickname = $nickname;
+        }
+
+        $user->save();
+
+        return Util::responseData(1, '修改成功');
+    }
+
+    public function getUserStars(Request $request) {
+        $params = ['id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
+
+        $followers = User::where('id', $id)
+            ->first()
+            ->userStars()
+            ->paginate($pageSize, ['users.id', 'nickname', 'avatar', 'summary']);
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $followers->all(),
+            'pagination' => [
+                'total' => $followers->total(),
+                'current' => $followers->currentPage(),
+                'pageSize' => $followers->perPage()
+            ]
+        ]);
+    }
 }

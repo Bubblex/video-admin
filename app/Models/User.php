@@ -28,4 +28,8 @@ class User extends Model
     public function followers() {
         return $this->hasMany('App\Models\Follower', 'follower');
     }
+
+    public function userStars() {
+        return $this->belongsToMany('App\Models\User', 'followers', 'follower', 'star')->withTimestamps();
+    }
 }

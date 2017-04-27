@@ -26,6 +26,7 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Library\\Util' => $baseDir . '/app/Library/Util.php',
     'App\\Models\\Article' => $baseDir . '/app/Models/Article.php',
+    'App\\Models\\Follower' => $baseDir . '/app/Models/Follower.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
     'App\\Models\\Video' => $baseDir . '/app/Models/Video.php',

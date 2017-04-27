@@ -13,9 +13,6 @@ use Illuminate\Http\Request;
 |
 */
 
-// Route::middleware('auth:api')->get('/api/user', function (Request $request) {
-//     return $request->user();
-// });
 Route::group(['namespace' => 'Account'], function() {
     Route::group(['prefix' => 'account'], function() {
         // 注册接口
@@ -27,6 +24,9 @@ Route::group(['namespace' => 'Account'], function() {
         Route::group(['middleware' => ['checkToken']], function() {
             // 重置密码
             Route::post('reset', 'UserController@postReset');
+
+            // 更新个人信息
+            Route::post('update', 'UserController@updateUserInfo');
         });
     });
 
@@ -39,4 +39,6 @@ Route::group(['namespace' => 'Account'], function() {
     });
 
     Route::post('user/basic', 'UserController@getUserInfoById');
+
+    Route::post('stars', 'UserController@getUserStars');
 });
