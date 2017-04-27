@@ -49,4 +49,7 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 关注用户
     Route::post('follow', 'UserController@followUser');
+
+    // 取消关注用户
+    Route::post('unfollow', 'UserController@unfollowUser');
 });

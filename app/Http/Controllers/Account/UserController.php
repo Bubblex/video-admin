@@ -373,4 +373,32 @@ class UserController extends Controller
 
         return Util::responseData(1, '关注成功');
     }
+
+    public function unfollowUser(Request $request) {
+        $params = ['id', 'token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+
+        if (!User::where('id', $id)->first()) {
+            Util::responseData(200, '没有该用户');
+        }
+
+        $token = $request->token;
+        $user = User::where('token', $token)->first();
+        $follower_id = $user->id;
+        $follower = Follower::where('star', $id)->where('follower', $follower_id)->first();
+
+        if (!$follower) {
+            return Util::responseData(201, '您没有关注该用户');
+        }
+
+        $follower->forceDelete();
+        return Util::responseData(1, '取消关注成功');
+    }
 }
