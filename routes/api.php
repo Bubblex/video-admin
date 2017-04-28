@@ -61,4 +61,7 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 获取文章列表
     Route::post('article/list', 'UserController@getArticleList');
+
+    // 获取用户发布的文章
+    Route::post('article/user', 'UserController@getUserArticle');
 });

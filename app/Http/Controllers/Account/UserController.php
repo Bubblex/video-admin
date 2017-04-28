@@ -451,11 +451,30 @@ class UserController extends Controller
     }
 
     public function getArticleList(Request $request) {
+        $id = $request->id;
+
         $type = $request->type;
         $page = $request->page;
+        $article_type = $request->article_type;
         $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
 
-        $articles = Article::orderBy('id', 'desc')->paginate($pageSize);
+        $articles;
+
+        if ($id) {
+            if ($type == 2) {
+            }
+            else {
+                $articles = Article::where('author', $id)->orderBy('id', 'desc')->paginate($pageSize);
+            }
+        }
+        else {
+            if ($article_type) {
+                $articles = Article::where('type_id', $article_type)->orderBy('id', 'desc')->paginate($pageSize);
+            }
+            else {
+                $articles = Article::orderBy('id', 'desc')->paginate($pageSize);
+            }
+        }
 
         return Util::responseData(1, '查询成功', [
             'list' => $articles->map(function($item, $key) {

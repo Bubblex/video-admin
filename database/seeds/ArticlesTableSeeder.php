@@ -19,6 +19,8 @@ class ArticlesTableSeeder extends Seeder
             'content' => '文章内容',
             'type_id' => 1,
             'read_num' => 100,
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s"),
         ]);
 
         DB::table('articles')->insert([
@@ -27,8 +29,22 @@ class ArticlesTableSeeder extends Seeder
             'cover' => '/',
             'summary' => '文章简介',
             'content' => '文章内容',
+            'type_id' => 2,
+            'read_num' => 100,
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s"),
+        ]);
+
+        DB::table('articles')->insert([
+            'title' => '文章标题3',
+            'author' => 2,
+            'cover' => '/',
+            'summary' => '文章简介',
+            'content' => '文章内容',
             'type_id' => 1,
             'read_num' => 100,
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s"),
         ]);
     }
 }
