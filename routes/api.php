@@ -54,7 +54,7 @@ Route::group(['namespace' => 'Account'], function() {
     Route::post('unfollow', 'UserController@unfollowUser');
 
     // 文件上传
-    Route::post('upload', 'UserController@uploadFile');
+    Route::get('upload', 'UserController@uploadFile');
 
     // 获取文章类型
     Route::post('article/type', 'UserController@getArticleType');
