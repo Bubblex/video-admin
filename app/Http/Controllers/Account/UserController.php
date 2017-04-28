@@ -453,10 +453,22 @@ class UserController extends Controller
     public function getArticleList(Request $request) {
         $type = $request->type;
         $page = $request->page;
-        $pageSize = $request->pageSize;
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
 
-        $articles = Article::all();
+        $articles = Article::orderBy('id', 'desc')->paginate($pageSize);
 
-        return Util::responseData(1, '查询成功', $articles);
+        return Util::responseData(1, '查询成功', [
+            'list' => $articles->map(function($item, $key) {
+                $article = $item;
+                $article['author'] = collect($item->articleAuthor)->only(['id', 'nickname', 'avatar']);
+                $article['article_type'] = collect($item->type);
+                return collect($article)->forget(['article_author', 'article_type']);
+            }),
+            'pagination' => [
+                'total' => $articles->total(),
+                'current' => $articles->currentPage(),
+                'pageSize' => $articles->perPage()
+            ]
+        ]);
     }
 }

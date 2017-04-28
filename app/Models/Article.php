@@ -10,7 +10,7 @@ class Article extends Model
         return $this->belongsTo('App\Models\ArticleType');
     }
 
-    public function author() {
-        return $this->belongsTo('App\Models\Users', 'user_id');
+    public function articleAuthor() {
+        return $this->belongsTo('App\Models\User', 'author');
     }
 }
