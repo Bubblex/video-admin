@@ -52,4 +52,7 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 取消关注用户
     Route::post('unfollow', 'UserController@unfollowUser');
+
+    // 文件上传
+    Route::post('upload', 'UserController@uploadFile');
 });

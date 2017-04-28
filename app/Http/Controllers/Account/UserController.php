@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Account;
 
+use Illuminate\Http\File;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -400,5 +401,21 @@ class UserController extends Controller
 
         $follower->forceDelete();
         return Util::responseData(1, '取消关注成功');
+    }
+
+    public function uploadFile(Request $request) {
+        $params = ['file'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $path = $request->file('file')->store('/uploads');
+
+        return Util::responseData(1, '上传成功', [
+            'file_path' => '/'.$path
+        ]);
     }
 }
