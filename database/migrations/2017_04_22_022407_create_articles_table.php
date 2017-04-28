@@ -38,7 +38,7 @@ class CreateArticlesTable extends Migration
             $table->integer('type_id');
 
             // 阅读量
-            $table->integer('read_num');
+            $table->integer('read_num')->default(0);
 
             // 文章状态
             $table->integer('status')->default(1);

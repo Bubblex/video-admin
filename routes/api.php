@@ -40,7 +40,11 @@ Route::group(['namespace' => 'Account'], function() {
         // 收藏文章
         Route::post('article/collect', 'UserController@collectArticle');
 
+        // 取消收藏文章
         Route::post('article/cancel', 'UserController@cancelCollectArticle');
+
+        // 发布 / 修改文章
+        Route::post('article/release', 'UserController@releaseArticle');
     });
 
     // 获取用户基础数据

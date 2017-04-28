@@ -579,4 +579,45 @@ class UserController extends Controller
 
         return Util::responseData(1, '文章取消收藏成功');
     }
+
+    public function releaseArticle(Request $request) {
+        $params = ['token', 'title', 'cover', 'summary', 'content', 'type_id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $article;
+        $errmsg;
+
+        $user = User::where('token', $request->token)->first();
+
+        if ($id) {
+            $article = Article::find($id);
+            if (!$article) {
+                return Util::responseData(200, '文章不存在');
+            }
+            if ($user->id != $article->author) {
+                return Util::responseData(201, '您不能修改别人发布的文章');
+            }
+            $errmsg = '修改成功';
+        }
+        else {
+            $errmsg = '添加成功';
+            $article = new Article;
+            $article->author = $user->id;
+        }
+
+        $article->title = $request->title;
+        $article->cover = $request->cover;
+        $article->summary = $request->summary;
+        $article->content = $request->content;
+        $article->type_id = $request->type_id;
+        $article->save();
+
+        return Util::responseData(1, $errmsg);
+    }
 }
