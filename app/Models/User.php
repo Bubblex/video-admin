@@ -40,4 +40,8 @@ class User extends Model
     public function userArticles() {
         return $this->hasMany('App\Models\Article', 'author');
     }
+
+    public function CollectArticles() {
+        return $this->belongsToMany('App\Models\Article', 'collects', 'user_id', 'article_id')->withPivot('id');
+    }
 }

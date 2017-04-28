@@ -462,6 +462,13 @@ class UserController extends Controller
 
         if ($id) {
             if ($type == 2) {
+                $user = User::where('id', $id)->first();
+
+                if (!$user) {
+                    return Util::responseData(201, '用户不存在');
+                }
+
+                $articles = $user->collectArticles()->where('type', 1)->orderBy('collects.id', 'desc')->paginate($pageSize);
             }
             else {
                 $articles = Article::where('author', $id)->orderBy('id', 'desc')->paginate($pageSize);

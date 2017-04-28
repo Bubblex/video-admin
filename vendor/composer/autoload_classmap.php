@@ -44,6 +44,7 @@ return array(
     'Carbon\\Carbon' => $vendorDir . '/nesbot/carbon/src/Carbon/Carbon.php',
     'Carbon\\CarbonInterval' => $vendorDir . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
     'Carbon\\Exceptions\\InvalidDateException' => $vendorDir . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',
+    'CollectsTableSeeder' => $baseDir . '/database/seeds/CollectsTableSeeder.php',
     'CreateArticleTypesTable' => $baseDir . '/database/migrations/2017_04_22_022510_create_article_types_table.php',
     'CreateArticlesTable' => $baseDir . '/database/migrations/2017_04_22_022407_create_articles_table.php',
     'CreateCollectsTable' => $baseDir . '/database/migrations/2017_04_22_022749_create_collects_table.php',
