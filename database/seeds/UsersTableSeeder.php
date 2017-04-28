@@ -16,7 +16,9 @@ class UsersTableSeeder extends Seeder
             'account' => 'xiaoxiao',
             'nickname' => '梦及深海',
             'summary' => '我是简介',
-            'password' => md5('123456')
+            'password' => md5('123456'),
+            'created_at' => date("Y-m-d H:i:s"),
+            'updated_at' => date("Y-m-d H:i:s"),
         ]);
     }
 }

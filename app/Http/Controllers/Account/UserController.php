@@ -99,7 +99,7 @@ class UserController extends Controller
                 'role_id' => $user->role_id,
                 'role_name' => $user->role->role_name,
                 'status' => $user->status,
-                'created_at' => $user->created_at
+                'created_at' => date($user->created_at)
             ]
         ]);
     }
@@ -165,7 +165,7 @@ class UserController extends Controller
             'card_number' => $user->card_number,
             'card_front_image' => $user->card_front_image,
             'card_back_image' => $user->card_back_image,
-            'created_at' => $user->created_at,
+            'created_at' => date($user->created_at),
 
             'authentication' => $user->authentication,
             'status' => $user->status,
@@ -256,7 +256,7 @@ class UserController extends Controller
             'role_id' => $user->role_id,
             'role_name' => $user->role->role_name,
             'status' => $user->status,
-            'created_at' => $user->created_at,
+            'created_at' => date($user->created_at),
 
             'articles_num' => $user->articles->count(),
             'videos_num' => $user->videos->count(),
@@ -299,7 +299,7 @@ class UserController extends Controller
             'card_number' => $user->card_number,
             'card_front_image' => $user->card_front_image,
             'card_back_image' => $user->card_back_image,
-            'created_at' => $user->created_at,
+            'created_at' => date($user->created_at),
 
             'authentication' => $user->authentication,
             'status' => $user->status,
