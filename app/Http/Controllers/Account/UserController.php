@@ -520,4 +520,63 @@ class UserController extends Controller
 
         return Util::responseData(1, '查询成功', $article);
     }
+
+    public function collectArticle(Request $request) {
+        $params = ['id', 'token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $token = $request->token;
+
+        $user = User::where('token', $token)->first();
+        $article = Article::find($id);
+
+        if (!$article) {
+            return Util::responseData(200, '没有该文章');
+        }
+
+        if ($article->author == $user->id) {
+            return Util::responseData(201, '您不能收藏自己的文章');
+        }
+
+        if (Collect::where('article_id', $id)->where('user_id', $user->id)->first()) {
+            return Util::responseData(202, '您已收藏该文章');
+        }
+
+        $collect = new Collect;
+        $collect->user_id = $user->id;
+        $collect->article_id = $id;
+        $collect->type = 1;
+        $collect->save();
+
+        return Util::responseData(1, '文章收藏成功');
+    }
+
+    public function cancelCollectArticle(Request $request) {
+        $params = ['id', 'token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $token = $request->token;
+
+        $collect = Collect::where('article_id', $id)->first();
+
+        if (!$collect) {
+            return Util::responseData(200, '您没有收藏该文章');
+        }
+
+        $collect->delete();
+
+        return Util::responseData(1, '文章取消收藏成功');
+    }
 }

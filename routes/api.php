@@ -36,6 +36,11 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 申请成为讲师
         Route::post('apply/lecturer', 'UserController@applyLecturer');
+
+        // 收藏文章
+        Route::post('article/collect', 'UserController@collectArticle');
+
+        Route::post('article/cancel', 'UserController@cancelCollectArticle');
     });
 
     // 获取用户基础数据
