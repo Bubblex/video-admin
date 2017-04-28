@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\User;
 use App\Models\Follower;
+use App\Models\ArticleType;
 
 use App\Library\Util;
 
@@ -295,8 +296,13 @@ class UserController extends Controller
             'summary' => $user->summary,
             'role_id' => $user->role_id,
             'role_name' => $user->role->role_name,
-            'status' => $user->status,
+            'card_number' => $user->card_number,
+            'card_front_image' => $user->card_front_image,
+            'card_back_image' => $user->card_back_image,
             'created_at' => $user->created_at,
+
+            'authentication' => $user->authentication,
+            'status' => $user->status,
 
             'articles_num' => $user->articles->count(),
             'videos_num' => $user->videos->count(),
@@ -432,6 +438,13 @@ class UserController extends Controller
 
         return Util::responseData(1, '上传成功', [
             'file_path' => '/'.$path
+        ]);
+    }
+
+    public function getArticleType(Request $request) {
+        $articleType = ArticleType::all();
+        return Util::responseData(1, '查询成功', [
+            'list' => $articleType
         ]);
     }
 }

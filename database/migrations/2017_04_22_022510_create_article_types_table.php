@@ -23,7 +23,7 @@ class CreateArticleTypesTable extends Migration
             $table->string('type_name');
 
             // 分类说明
-            $table->string('type_explanation');
+            $table->string('type_explanation')->nullable();
 
             // 时间戳
             $table->timestamps();

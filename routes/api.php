@@ -55,4 +55,7 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 文件上传
     Route::post('upload', 'UserController@uploadFile');
+
+    // 获取文章类型
+    Route::post('article/type', 'UserController@getArticleType');
 });
