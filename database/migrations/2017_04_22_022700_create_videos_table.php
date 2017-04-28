@@ -32,7 +32,7 @@ class CreateVideosTable extends Migration
             $table->string('video_url');
 
             // 播放量
-            $table->integer('play_num');
+            $table->integer('play_num')->default(0);
 
             // 视频状态
             $table->integer('status')->default(1);

@@ -73,4 +73,10 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 获取文章详情
     Route::post('article/detail', 'UserController@getArticleDetail');
+
+    // 获取视频列表
+    Route::post('video/list', 'UserController@getVideoList');
+
+    // 获取视频详情
+    Route::post('video/detail', 'UserController@getVideoDetail');
 });

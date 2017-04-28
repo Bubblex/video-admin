@@ -11,6 +11,7 @@ use App\Models\Follower;
 use App\Models\ArticleType;
 use App\Models\Collect;
 use App\Models\Article;
+use App\Models\Video;
 
 use App\Library\Util;
 
@@ -471,15 +472,15 @@ class UserController extends Controller
                 $articles = $user->collectArticles()->where('type', 1)->orderBy('collects.id', 'desc')->paginate($pageSize);
             }
             else {
-                $articles = Article::where('author', $id)->orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('author', $id)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
             }
         }
         else {
             if ($article_type) {
-                $articles = Article::where('type_id', $article_type)->orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('type_id', $article_type)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
             }
             else {
-                $articles = Article::orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
             }
         }
 
@@ -514,11 +515,17 @@ class UserController extends Controller
             return Util::responseData(200, '没有该文章');
         }
 
+        if ($article->status == 2) {
+            return Util::responseData(201, '该文章已禁用');
+        }
+
+        if ($article->status == 3) {
+            return Util::responseData(202, '该文章已删除');
+        }
+
         $article['author'] = collect($article->articleAuthor)->only(['id', 'nickname', 'avatar']);
         $article['article_type'] = collect($article->type);
-        return collect($article)->forget(['article_author', 'article_type', 'content']);
-
-        return Util::responseData(1, '查询成功', $article);
+        return Util::responseData(1, '查询成功', collect($article)->forget(['article_author', 'article_type']));
     }
 
     public function collectArticle(Request $request) {
@@ -592,6 +599,7 @@ class UserController extends Controller
         $id = $request->id;
         $article;
         $errmsg;
+        $success;
 
         $user = User::where('token', $request->token)->first();
 
@@ -603,10 +611,12 @@ class UserController extends Controller
             if ($user->id != $article->author) {
                 return Util::responseData(201, '您不能修改别人发布的文章');
             }
-            $errmsg = '修改成功';
+            $errmsg = '修改失败';
+            $success = '修改成功';
         }
         else {
-            $errmsg = '添加成功';
+            $errmsg = '添加失败';
+            $success = '添加成功';
             $article = new Article;
             $article->author = $user->id;
         }
@@ -616,8 +626,81 @@ class UserController extends Controller
         $article->summary = $request->summary;
         $article->content = $request->content;
         $article->type_id = $request->type_id;
-        $article->save();
+        $result = $article->save();
 
-        return Util::responseData(1, $errmsg);
+        if ($result) {
+            return Util::responseData(1, $success);
+        }
+        else {
+            return Util::responseData(0, $errmsg);
+        }
+    }
+
+    public function getVideoList(Request $request) {
+        $id = $request->id;
+        $type = $request->type;
+        $page = $request->page;
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
+
+        $videos;
+
+        if ($id) {
+            if ($type == 2) {
+                $user = User::where('id', $id)->first();
+
+                if (!$user) {
+                    return Util::responseData(201, '用户不存在');
+                }
+
+                $videos = $user->collectVideos()->where('type', 2)->orderBy('collects.id', 'desc')->paginate($pageSize);
+            }
+            else {
+                $videos = Video::where('author', $id)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+            }
+        }
+        else {
+            $videos = Video::where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $videos->map(function($item, $key) {
+                $video = $item;
+                $video['author'] = collect($item->videoAuthor)->only(['id', 'nickname', 'avatar']);
+                return collect($video)->forget(['video_author', 'video_url']);
+            }),
+            'pagination' => [
+                'total' => $videos->total(),
+                'current' => $videos->currentPage(),
+                'pageSize' => $videos->perPage()
+            ]
+        ]);
+    }
+
+    public function getVideoDetail(Request $request) {
+        $params = ['id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $video = Video::find($request->id);
+
+        if (!$video) {
+            return Util::responseData(200, '没有该视频');
+        }
+
+        if ($video->status == 2) {
+            return Util::responseData(201, '该视频已禁用');
+        }
+
+        if ($video->status == 3) {
+            return Util::responseData(202, '该视频已删除');
+        }
+
+        $video['author'] = collect($video->videoAuthor)->only(['id', 'nickname', 'avatar']);
+
+        return Util::responseData(1, '查询成功', collect($video)->forget(['video_author']));
     }
 }
