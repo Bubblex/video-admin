@@ -739,4 +739,27 @@ class UserController extends Controller
 
         return Util::responseData(1, '视频收藏成功');
     }
+
+    public function cancelCollectVideo(Request $request) {
+        $params = ['id', 'token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $token = $request->token;
+
+        $collect = Collect::where('video_id', $id)->first();
+
+        if (!$collect) {
+            return Util::responseData(200, '您没有收藏该视频');
+        }
+
+        $collect->delete();
+
+        return Util::responseData(1, '视频取消收藏成功');
+    }
 }
