@@ -273,6 +273,7 @@ class ComposerStaticInitdfa442cda39a7db76e0c5b4513901d76
 
     public static $classMap = array (
         'AddForeignToArticles' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_120538_add_foreign_to_articles.php',
+        'AddForeignToCollect' => __DIR__ . '/../..' . '/database/migrations/2017_04_28_070446_add_foreign_to_collect.php',
         'AddForeignToFollowers' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_115717_add_foreign_to_followers.php',
         'AddForeignToUsers' => __DIR__ . '/../..' . '/database/migrations/2017_04_22_115443_add_foreign_to_users.php',
         'AddForeignToVideo' => __DIR__ . '/../..' . '/database/migrations/2017_04_25_134509_add_foreign_to_video.php',
@@ -292,6 +293,8 @@ class ComposerStaticInitdfa442cda39a7db76e0c5b4513901d76
         'App\\Http\\Middleware\\VerifyCsrfToken' => __DIR__ . '/../..' . '/app/Http/Middleware/VerifyCsrfToken.php',
         'App\\Library\\Util' => __DIR__ . '/../..' . '/app/Library/Util.php',
         'App\\Models\\Article' => __DIR__ . '/../..' . '/app/Models/Article.php',
+        'App\\Models\\ArticleType' => __DIR__ . '/../..' . '/app/Models/ArticleType.php',
+        'App\\Models\\Collect' => __DIR__ . '/../..' . '/app/Models/Collect.php',
         'App\\Models\\Follower' => __DIR__ . '/../..' . '/app/Models/Follower.php',
         'App\\Models\\Role' => __DIR__ . '/../..' . '/app/Models/Role.php',
         'App\\Models\\User' => __DIR__ . '/../..' . '/app/Models/User.php',
@@ -303,6 +306,7 @@ class ComposerStaticInitdfa442cda39a7db76e0c5b4513901d76
         'App\\Providers\\RouteServiceProvider' => __DIR__ . '/../..' . '/app/Providers/RouteServiceProvider.php',
         'App\\User' => __DIR__ . '/../..' . '/app/User.php',
         'ArticleTypesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ArticleTypesTableSeeder.php',
+        'ArticlesTableSeeder' => __DIR__ . '/../..' . '/database/seeds/ArticlesTableSeeder.php',
         'Carbon\\Carbon' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Carbon.php',
         'Carbon\\CarbonInterval' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
         'Carbon\\Exceptions\\InvalidDateException' => __DIR__ . '/..' . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',

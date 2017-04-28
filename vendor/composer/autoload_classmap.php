@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'AddForeignToArticles' => $baseDir . '/database/migrations/2017_04_22_120538_add_foreign_to_articles.php',
+    'AddForeignToCollect' => $baseDir . '/database/migrations/2017_04_28_070446_add_foreign_to_collect.php',
     'AddForeignToFollowers' => $baseDir . '/database/migrations/2017_04_22_115717_add_foreign_to_followers.php',
     'AddForeignToUsers' => $baseDir . '/database/migrations/2017_04_22_115443_add_foreign_to_users.php',
     'AddForeignToVideo' => $baseDir . '/database/migrations/2017_04_25_134509_add_foreign_to_video.php',
@@ -26,6 +27,8 @@ return array(
     'App\\Http\\Middleware\\VerifyCsrfToken' => $baseDir . '/app/Http/Middleware/VerifyCsrfToken.php',
     'App\\Library\\Util' => $baseDir . '/app/Library/Util.php',
     'App\\Models\\Article' => $baseDir . '/app/Models/Article.php',
+    'App\\Models\\ArticleType' => $baseDir . '/app/Models/ArticleType.php',
+    'App\\Models\\Collect' => $baseDir . '/app/Models/Collect.php',
     'App\\Models\\Follower' => $baseDir . '/app/Models/Follower.php',
     'App\\Models\\Role' => $baseDir . '/app/Models/Role.php',
     'App\\Models\\User' => $baseDir . '/app/Models/User.php',
@@ -37,6 +40,7 @@ return array(
     'App\\Providers\\RouteServiceProvider' => $baseDir . '/app/Providers/RouteServiceProvider.php',
     'App\\User' => $baseDir . '/app/User.php',
     'ArticleTypesTableSeeder' => $baseDir . '/database/seeds/ArticleTypesTableSeeder.php',
+    'ArticlesTableSeeder' => $baseDir . '/database/seeds/ArticlesTableSeeder.php',
     'Carbon\\Carbon' => $vendorDir . '/nesbot/carbon/src/Carbon/Carbon.php',
     'Carbon\\CarbonInterval' => $vendorDir . '/nesbot/carbon/src/Carbon/CarbonInterval.php',
     'Carbon\\Exceptions\\InvalidDateException' => $vendorDir . '/nesbot/carbon/src/Carbon/Exceptions/InvalidDateException.php',

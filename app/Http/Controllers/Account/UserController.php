@@ -9,6 +9,8 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Follower;
 use App\Models\ArticleType;
+use App\Models\Collect;
+use App\Models\Article;
 
 use App\Library\Util;
 
@@ -446,5 +448,15 @@ class UserController extends Controller
         return Util::responseData(1, '查询成功', [
             'list' => $articleType
         ]);
+    }
+
+    public function getArticleList(Request $request) {
+        $type = $request->type;
+        $page = $request->page;
+        $pageSize = $request->pageSize;
+
+        $articles = Article::all();
+
+        return Util::responseData(1, '查询成功', $articles);
     }
 }

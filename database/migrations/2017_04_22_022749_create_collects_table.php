@@ -16,6 +16,18 @@ class CreateCollectsTable extends Migration
             // id
             $table->increments('id');
 
+            // 收藏人
+            $table->integer('user_id')->unsigned()->nullable();
+
+            // 文章 id
+            $table->integer('article_id')->unsigned()->nullable();
+
+            // 视频 id
+            $table->integer('video_id')->unsigned()->nullable();
+
+            // 收藏的类型
+            $table->integer('type');
+
             // 时间戳
             $table->timestamps();
         });
