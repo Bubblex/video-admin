@@ -497,4 +497,27 @@ class UserController extends Controller
             ]
         ]);
     }
+
+    public function getArticleDetail(Request $request) {
+        $params = ['id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $article = Article::where('id', $id)->first();
+
+        if (!$article) {
+            return Util::responseData(200, '没有该文章');
+        }
+
+        $article['author'] = collect($article->articleAuthor)->only(['id', 'nickname', 'avatar']);
+        $article['article_type'] = collect($article->type);
+        return collect($article)->forget(['article_author', 'article_type', 'content']);
+
+        return Util::responseData(1, '查询成功', $article);
+    }
 }
