@@ -287,7 +287,23 @@ class UserController extends Controller
 
         $user->save();
 
-        return Util::responseData(1, '修改成功');
+        return Util::responseData(1, '修改成功', [
+            'id' => $user->id,
+            'account' => $user->account,
+            'nickname' => $user->nickname,
+            'avatar' => $user->avatar,
+            'summary' => $user->summary,
+            'role_id' => $user->role_id,
+            'role_name' => $user->role->role_name,
+            'status' => $user->status,
+            'created_at' => $user->created_at,
+
+            'articles_num' => $user->articles->count(),
+            'videos_num' => $user->videos->count(),
+            // TODO: 结果有可能不准确，待测试
+            'stars_num' => $user->stars->count(),
+            'followers_num' => $user->stars->count()
+        ]);
     }
 
     public function getUserStars(Request $request) {
