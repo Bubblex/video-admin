@@ -488,7 +488,7 @@ class UserController extends Controller
                 $article = $item;
                 $article['author'] = collect($item->articleAuthor)->only(['id', 'nickname', 'avatar']);
                 $article['article_type'] = collect($item->type);
-                return collect($article)->forget(['article_author', 'article_type']);
+                return collect($article)->forget(['article_author', 'article_type', 'content']);
             }),
             'pagination' => [
                 'total' => $articles->total(),
