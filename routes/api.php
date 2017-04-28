@@ -45,6 +45,9 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 发布 / 修改文章
         Route::post('article/release', 'UserController@releaseArticle');
+
+        // 收藏视频
+        Route::post('video/collect', 'UserController@collectVideo');
     });
 
     // 获取用户基础数据

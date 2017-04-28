@@ -703,4 +703,40 @@ class UserController extends Controller
 
         return Util::responseData(1, '查询成功', collect($video)->forget(['video_author']));
     }
+
+    public function collectVideo(Request $request) {
+        $params = ['id', 'token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $token = $request->token;
+
+        $user = User::where('token', $token)->first();
+        $video = Video::find($id);
+
+        if (!$video) {
+            return Util::responseData(200, '没有该文章');
+        }
+
+        if ($video->author == $user->id) {
+            return Util::responseData(201, '您不能收藏自己的视频');
+        }
+
+        if (Collect::where('video_id', $id)->where('user_id', $user->id)->first()) {
+            return Util::responseData(202, '您已收藏该视频');
+        }
+
+        $collect = new Collect;
+        $collect->user_id = $user->id;
+        $collect->video_id = $id;
+        $collect->type = 2;
+        $collect->save();
+
+        return Util::responseData(1, '视频收藏成功');
+    }
 }
