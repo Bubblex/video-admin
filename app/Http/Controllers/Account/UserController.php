@@ -12,6 +12,7 @@ use App\Models\ArticleType;
 use App\Models\Collect;
 use App\Models\Article;
 use App\Models\Video;
+use App\Models\Message;
 
 use App\Library\Util;
 
@@ -217,6 +218,11 @@ class UserController extends Controller
         $user->authentication = 2;
         $user->save();
 
+        $message = new Message;
+        $message->title = '您已提交讲师认证申请，请耐心等待审核';
+        $message->user_id = $user->id;
+        $message->save();
+
         return Util::responseData(1, '申请成功，请耐心等待审核通过');
     }
 
@@ -269,6 +275,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 修改用户资料
+     *
+     * @param Request $request
+     * @return void
+     */
     public function updateUserInfo(Request $request) {
         $token = $request->token;
         $avatar = $request->avatar;
@@ -315,6 +327,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 获取用户关注列表
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getUserStars(Request $request) {
         $params = ['id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -342,6 +360,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 获取用户粉丝列表
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getUserFollowers(Request $request) {
         $params = ['id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -369,6 +393,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 关注用户
+     *
+     * @param Request $request
+     * @return void
+     */
     public function followUser(Request $request) {
         $params = ['id', 'token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -400,6 +430,12 @@ class UserController extends Controller
         return Util::responseData(1, '关注成功');
     }
 
+    /**
+     * 取消关注用户
+     *
+     * @param Request $request
+     * @return void
+     */
     public function unfollowUser(Request $request) {
         $params = ['id', 'token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -428,6 +464,12 @@ class UserController extends Controller
         return Util::responseData(1, '取消关注成功');
     }
 
+    /**
+     * 上传文件
+     *
+     * @param Request $request
+     * @return void
+     */
     public function uploadFile(Request $request) {
         $params = ['file'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -444,6 +486,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 获取文章类型
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getArticleType(Request $request) {
         $articleType = ArticleType::all();
         return Util::responseData(1, '查询成功', [
@@ -451,6 +499,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 获取全部文章列表
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getArticleList(Request $request) {
         $id = $request->id;
 
@@ -499,6 +553,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 获取文章详情
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getArticleDetail(Request $request) {
         $params = ['id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -531,6 +591,12 @@ class UserController extends Controller
         return Util::responseData(1, '查询成功', collect($article)->forget(['article_author', 'article_type']));
     }
 
+    /**
+     * 收藏文章
+     *
+     * @param Request $request
+     * @return void
+     */
     public function collectArticle(Request $request) {
         $params = ['id', 'token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -567,6 +633,12 @@ class UserController extends Controller
         return Util::responseData(1, '文章收藏成功');
     }
 
+    /**
+     * 取消收藏文章
+     *
+     * @param Request $request
+     * @return void
+     */
     public function cancelCollectArticle(Request $request) {
         $params = ['id', 'token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -590,6 +662,12 @@ class UserController extends Controller
         return Util::responseData(1, '文章取消收藏成功');
     }
 
+    /**
+     * 发布 / 更新文章
+     *
+     * @param Request $request
+     * @return void
+     */
     public function releaseArticle(Request $request) {
         $params = ['token', 'title', 'cover', 'summary', 'content', 'type_id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -639,6 +717,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * 获取视频列表
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getVideoList(Request $request) {
         $id = $request->id;
         $type = $request->type;
@@ -679,6 +763,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 获取视频详情
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getVideoDetail(Request $request) {
         $params = ['id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -710,6 +800,12 @@ class UserController extends Controller
         return Util::responseData(1, '查询成功', collect($video)->forget(['video_author']));
     }
 
+    /**
+     * 收藏视频
+     *
+     * @param Request $request
+     * @return void
+     */
     public function collectVideo(Request $request) {
         $params = ['id', 'token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -746,6 +842,12 @@ class UserController extends Controller
         return Util::responseData(1, '视频收藏成功');
     }
 
+    /**
+     * 取消收藏视频
+     *
+     * @param Request $request
+     * @return void
+     */
     public function cancelCollectVideo(Request $request) {
         $params = ['id', 'token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -769,6 +871,12 @@ class UserController extends Controller
         return Util::responseData(1, '视频取消收藏成功');
     }
 
+    /**
+     * 发布 / 修改视频
+     *
+     * @param Request $request
+     * @return void
+     */
     public function releaseVideo (Request $request) {
         $params = ['token', 'title', 'cover', 'summary', 'video_url'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
