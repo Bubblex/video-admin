@@ -523,6 +523,9 @@ class UserController extends Controller
             return Util::responseData(202, '该文章已删除');
         }
 
+        $article->read_num = $article->read_num + 1;
+        $article->save();
+
         $article['author'] = collect($article->articleAuthor)->only(['id', 'nickname', 'avatar']);
         $article['article_type'] = collect($article->type);
         return Util::responseData(1, '查询成功', collect($article)->forget(['article_author', 'article_type']));
@@ -698,6 +701,9 @@ class UserController extends Controller
         if ($video->status == 3) {
             return Util::responseData(202, '该视频已删除');
         }
+
+        $video->play_num = $video->play_num + 1;
+        $video->save();
 
         $video['author'] = collect($video->videoAuthor)->only(['id', 'nickname', 'avatar']);
 
