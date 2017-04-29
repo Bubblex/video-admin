@@ -58,6 +58,9 @@ Route::group(['namespace' => 'Account'], function() {
         // 获取用户消息列表
         Route::post('message/list', 'UserController@getMessageList');
 
+        // 阅读消息
+        Route::post('message/info', 'UserController@readMessage');
+
         // 关注用户
         Route::post('follow', 'UserController@followUser');
 

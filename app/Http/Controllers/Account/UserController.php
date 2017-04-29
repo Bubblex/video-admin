@@ -178,7 +178,9 @@ class UserController extends Controller
             'videos_num' => $user->videos->count(),
             // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
-            'followers_num' => $user->followers->count()
+            'followers_num' => $user->followers->count(),
+
+            'is_follow' => 2
         ]);
     }
 
@@ -257,10 +259,10 @@ class UserController extends Controller
             return Util::responseData(202, '该账户已删除');
         }
 
-        $user = User::where('token', $token)->first();
-        $is_follow;
+        $login_user = User::where('token', $token)->first();
+        $is_follow = null;
 
-        if ($user) {
+        if ($login_user) {
             $is_follow = Follower::where('star', $id)->where('follower', $user->id)->first();
         }
 
@@ -952,6 +954,35 @@ class UserController extends Controller
             return Util::responseData(300, $checkParamsResult);
         }
 
-        $user = User::where('token', $request->token);
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
+        $user = User::where('token', $request->token)->first();
+        $messages = $user->messages()->orderBy('id', 'desc')->paginate();
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $messages->all(),
+            'pagination' => [
+                'total' => $messages->total(),
+                'current' => $messages->currentPage(),
+                'pageSize' => $messages->perPage()
+            ]
+        ]);
+    }
+
+    public function readMessage(Request $request) {
+        $params = ['token', 'id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $message = Message::find($request->id);
+
+        if (!$message) {
+            return Util::responseData();
+        }
+
+        $user = User::where('token', $request->token)->first();
     }
 }
