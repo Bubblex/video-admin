@@ -267,7 +267,7 @@ class UserController extends Controller
                 $is_follow = 0;
             }
             else {
-                $is_follow = Follower::where('star', $id)->where('follower', $user->id)->first() ? 1 : 2;
+                $is_follow = Follower::where('star', $id)->where('follower', $login_user->id)->first() ? 1 : 2;
             }
         }
         else {
