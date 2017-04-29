@@ -762,4 +762,52 @@ class UserController extends Controller
 
         return Util::responseData(1, '视频取消收藏成功');
     }
+
+    public function releaseVideo (Request $request) {
+        $params = ['token', 'title', 'cover', 'summary', 'video_url'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $video;
+        $errmsg;
+        $success;
+
+        $user = User::where('token', $request->token)->first();
+
+        if ($id) {
+            $video = Video::find($id);
+            if (!$video) {
+                return Util::responseData(200, '文章不存在');
+            }
+            if ($user->id != $video->author) {
+                return Util::responseData(201, '您不能修改别人发布的文章');
+            }
+            $errmsg = '修改失败';
+            $success = '修改成功';
+        }
+        else {
+            $errmsg = '添加失败';
+            $success = '添加成功';
+            $video = new Video;
+            $video->author = $user->id;
+        }
+
+        $video->title = $request->title;
+        $video->cover = $request->cover;
+        $video->summary = $request->summary;
+        $video->video_url = $request->video_url;
+        $result = $video->save();
+
+        if ($result) {
+            return Util::responseData(1, $success);
+        }
+        else {
+            return Util::responseData(0, $errmsg);
+        }
+    }
 }

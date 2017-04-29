@@ -51,6 +51,9 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 取消收藏视频
         Route::post('video/cancel', 'UserController@cancelCollectVideo');
+
+        // 发布 / 修改视频
+        Route::post('video/release', 'UserController@releaseVideo');
     });
 
     // 获取用户基础数据
