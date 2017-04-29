@@ -432,6 +432,10 @@ class UserController extends Controller
         $user = User::where('token', $token)->first();
         $follower_id = $user->id;
 
+        if ($follower_id == $id) {
+            return Util::responseData(202, '您不能关注自己');
+        }
+
         if (Follower::where('star', $id)->where('follower', $follower_id)->first()) {
             return Util::responseData(201, '您已关注该用户');
         }
