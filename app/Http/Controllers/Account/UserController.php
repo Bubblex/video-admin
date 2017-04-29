@@ -180,7 +180,7 @@ class UserController extends Controller
             'stars_num' => $user->stars->count(),
             'followers_num' => $user->followers->count(),
 
-            'is_follow' => 2
+            'is_follow' => 0
         ]);
     }
 
@@ -980,7 +980,7 @@ class UserController extends Controller
         $message = Message::find($request->id);
 
         if (!$message) {
-            return Util::responseData();
+            return Util::responseData('');
         }
 
         $user = User::where('token', $request->token)->first();
