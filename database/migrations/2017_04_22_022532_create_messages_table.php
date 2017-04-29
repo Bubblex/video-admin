@@ -30,6 +30,9 @@ class CreateMessagesTable extends Migration
 
             // 时间戳
             $table->timestamps();
+
+            // 软删除
+            $table->softDeletes();
         });
     }
 

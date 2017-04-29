@@ -270,6 +270,9 @@ class UserController extends Controller
                 $is_follow = Follower::where('star', $id)->where('follower', $user->id)->first() ? 1 : 2;
             }
         }
+        else {
+            $is_follow = 2;
+        }
 
         return Util::responseData(1, '查询成功', [
             'id' => $user->id,
@@ -973,6 +976,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 阅读消息
+     *
+     * @param Request $request
+     * @return void
+     */
     public function readMessage(Request $request) {
         $params = ['token', 'id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -983,5 +992,42 @@ class UserController extends Controller
         }
 
         $user = User::where('token', $request->token)->first();
+        $message = $user->messages()->find($request->id);
+
+        if (!$message) {
+            return Util::responseData(200, '没有该消息');
+        }
+
+        $message->status = 2;
+        $message->save();
+
+        return Util::responseData(1, '已读');
+    }
+
+    /**
+     * 删除消息
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function deleteMessage(Request $request) {
+        $params = ['token', 'id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $user = User::where('token', $request->token)->first();
+        $message = $user->messages()->find($request->id);
+
+        if (!$message) {
+            return Util::responseData(200, '没有该消息');
+        }
+
+        $message->delete();
+
+        return Util::responseData(1, '删除成功');
     }
 }

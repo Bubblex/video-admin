@@ -59,7 +59,10 @@ Route::group(['namespace' => 'Account'], function() {
         Route::post('message/list', 'UserController@getMessageList');
 
         // 阅读消息
-        Route::post('message/info', 'UserController@readMessage');
+        Route::post('message/read', 'UserController@readMessage');
+
+        // 删除消息
+        Route::post('message/delete', 'UserController@deleteMessage');
 
         // 关注用户
         Route::post('follow', 'UserController@followUser');
