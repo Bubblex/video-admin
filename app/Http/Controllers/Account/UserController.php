@@ -178,7 +178,7 @@ class UserController extends Controller
             'videos_num' => $user->videos->count(),
             // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
-            'followers_num' => $user->stars->count()
+            'followers_num' => $user->followers->count()
         ]);
     }
 
@@ -271,7 +271,7 @@ class UserController extends Controller
             'videos_num' => $user->videos->count(),
             // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
-            'followers_num' => $user->stars->count()
+            'followers_num' => $user->followers->count()
         ]);
     }
 
@@ -344,9 +344,13 @@ class UserController extends Controller
 
         $id = $request->id;
         $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
+        $user = User::where('id', $id)->first();
 
-        $followers = User::where('id', $id)
-            ->first()
+        if (!$user) {
+            return Util::responseData(200, '没有该用户');
+        }
+
+        $followers = $user
             ->userStars()
             ->paginate($pageSize, ['users.id', 'nickname', 'avatar', 'summary']);
 
@@ -411,7 +415,7 @@ class UserController extends Controller
         $id = $request->id;
 
         if (!User::where('id', $id)->first()) {
-            Util::responseData(200, '没有该用户');
+            return Util::responseData(200, '没有该用户');
         }
 
         $token = $request->token;
@@ -923,5 +927,17 @@ class UserController extends Controller
         else {
             return Util::responseData(0, $errmsg);
         }
+    }
+
+    public function getMessageList(Request $request) {
+        $params = ['token'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $user = User::where('token', $request->token);
     }
 }

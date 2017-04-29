@@ -21,11 +21,11 @@ class User extends Model
         return $this->hasMany('App\Models\Article', 'author');
     }
 
-    public function stars() {
+    public function followers() {
         return $this->hasMany('App\Models\Follower', 'star');
     }
 
-    public function followers() {
+    public function stars() {
         return $this->hasMany('App\Models\Follower', 'follower');
     }
 
@@ -47,5 +47,9 @@ class User extends Model
 
     public function collectVideos() {
         return $this->belongsToMany('App\Models\Video', 'collects', 'user_id', 'video_id')->withPivot('id');
+    }
+
+    public function messages() {
+        return $this->hasMany('App\Models\Message');
     }
 }

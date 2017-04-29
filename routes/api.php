@@ -54,6 +54,15 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 发布 / 修改视频
         Route::post('video/release', 'UserController@releaseVideo');
+
+        // 获取用户消息列表
+        Route::post('message/list', 'UserController@getMessageList');
+
+        // 关注用户
+        Route::post('follow', 'UserController@followUser');
+
+        // 取消关注用户
+        Route::post('unfollow', 'UserController@unfollowUser');
     });
 
     // 获取用户基础数据
@@ -64,12 +73,6 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 获取用户粉丝列表
     Route::post('followers', 'UserController@getUserFollowers');
-
-    // 关注用户
-    Route::post('follow', 'UserController@followUser');
-
-    // 取消关注用户
-    Route::post('unfollow', 'UserController@unfollowUser');
 
     // 文件上传
     Route::post('upload', 'UserController@uploadFile');
