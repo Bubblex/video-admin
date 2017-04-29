@@ -263,7 +263,12 @@ class UserController extends Controller
         $is_follow = null;
 
         if ($login_user) {
-            $is_follow = Follower::where('star', $id)->where('follower', $user->id)->first();
+            if ($login_user->id == $user->id) {
+                $is_follow = 0;
+            }
+            else {
+                $is_follow = Follower::where('star', $id)->where('follower', $user->id)->first() ? 1 : 2;
+            }
         }
 
         return Util::responseData(1, '查询成功', [
@@ -283,7 +288,7 @@ class UserController extends Controller
             'stars_num' => $user->stars->count(),
             'followers_num' => $user->followers->count(),
 
-            'is_follow' => $is_follow ? 1 : 2
+            'is_follow' => $is_follow
         ]);
     }
 
@@ -975,12 +980,6 @@ class UserController extends Controller
         // 检测必填参数
         if ($checkParamsResult) {
             return Util::responseData(300, $checkParamsResult);
-        }
-
-        $message = Message::find($request->id);
-
-        if (!$message) {
-            return Util::responseData('');
         }
 
         $user = User::where('token', $request->token)->first();
