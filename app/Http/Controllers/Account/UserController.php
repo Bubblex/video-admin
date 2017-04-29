@@ -242,6 +242,7 @@ class UserController extends Controller
         }
 
         $id = $request->id;
+        $token = $request->token;
         $user = User::where('id', $id)->first();
 
         if (!$user) {
@@ -254,6 +255,13 @@ class UserController extends Controller
 
         if ($user->status == 3) {
             return Util::responseData(202, '该账户已删除');
+        }
+
+        $user = User::where('token', $token)->first();
+        $is_follow;
+
+        if ($user) {
+            $is_follow = Follower::where('star', $id)->where('follower', $user->id)->first();
         }
 
         return Util::responseData(1, '查询成功', [
@@ -271,7 +279,9 @@ class UserController extends Controller
             'videos_num' => $user->videos->count(),
             // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
-            'followers_num' => $user->followers->count()
+            'followers_num' => $user->followers->count(),
+
+            'is_follow' => $is_follow ? 1 : 2
         ]);
     }
 
