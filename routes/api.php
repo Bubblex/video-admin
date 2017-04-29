@@ -69,6 +69,9 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 取消关注用户
         Route::post('unfollow', 'UserController@unfollowUser');
+
+        // 获取文章评论
+        Route::post('article/comment', 'UserController@getArticleComment');
     });
 
     // 获取用户基础数据

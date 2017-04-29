@@ -402,9 +402,14 @@ class UserController extends Controller
         $id = $request->id;
         $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
 
-        $followers = User::where('id', $id)
-            ->first()
-            ->userStars()
+        $user = User::where('id', $id)->first();
+
+        if (!$user) {
+            return Util::responseData(200, '没有该用户');
+        }
+
+        $followers = $user
+            ->userFollowers()
             ->paginate($pageSize, ['users.id', 'nickname', 'avatar', 'summary']);
 
         return Util::responseData(1, '查询成功', [
@@ -1029,5 +1034,28 @@ class UserController extends Controller
         $message->delete();
 
         return Util::responseData(1, '删除成功');
+    }
+
+    public function getArticleComment(Request $request) {
+        $params = ['token', 'id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $token = $request->token;
+
+        $article = Article::find($id);
+
+        if (!$article) {
+            return Util::responseData(200, '没有该文章');
+        }
+
+        $user = User::where('token', $token)->first();
+
+        return Util::responseData(1, '查询成功', $article->comments);
     }
 }
