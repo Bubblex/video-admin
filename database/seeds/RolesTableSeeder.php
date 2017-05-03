@@ -11,7 +11,6 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        //
         DB::table('roles')->insert([
             'role_name' => '普通用户'
         ]);

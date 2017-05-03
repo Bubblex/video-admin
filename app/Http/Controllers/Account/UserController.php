@@ -1058,4 +1058,118 @@ class UserController extends Controller
 
         return Util::responseData(1, '查询成功', $article->comments);
     }
+
+    /**
+     * 管理员登录
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function adminLogin(Request $request) {
+        $params = ['account', 'password'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $account = $request->account;
+        $password = $request->password;
+
+        $user = User::where('account', $account)->first();
+
+        // 用户不存在
+        if (!$user) {
+            return Util::responseData(203, '用户不存在');
+        }
+
+        if ($user->role_id != 3) {
+            return Util::responseData(205, '只有管理员才可以登录');
+        }
+
+        // 密码不一致
+        if ($user->password != $password) {
+            return Util::responseData(204, '用户名或密码错误');
+        }
+
+        $token = Util::generateToken();
+        $user->token = $token;
+        $user->save();
+
+        return Util::responseData(1, '登录成功', [
+            'token' => $token,
+            'user' => [
+                'id' => $user->id,
+                'account' => $user->account,
+                'nickname' => $user->nickname,
+                'avatar' => $user->avatar,
+                'summary' => $user->summary,
+                'role_id' => $user->role_id,
+                'role_name' => $user->role->role_name,
+                'status' => $user->status,
+                'created_at' => date($user->created_at)
+            ]
+        ]);
+    }
+
+    /**
+     * 获取用户列表
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getAdminUserList(Request $request) {
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 6;
+        $filter = $request->filter;
+        $user = null;
+
+        if ($filter) {
+            $users = User::where('status', '<>', 3)->where(function($query) use ($filter) {
+                $query->where('account', 'like', '%'.$filter.'%')
+                    ->orWhere('nickname', 'like', '%'.$filter.'%')
+                    ->orWhere('id', $filter);
+            })->with('role')->paginate($pageSize);
+        }
+        else {
+            $users = User::where('status', '<>', 3)->with('role')->paginate($pageSize);
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $users->all(),
+            'pagination' => [
+                'total' => $users->total(),
+                'current' => $users->currentPage(),
+                'pageSize' => $users->perPage()
+            ]
+        ]);
+    }
+
+    public function disableUser(Request $request) {
+        $params = ['id', 'disable'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $option = '';
+        $user = User::find($request->id);
+
+        if (!$user) {
+            return Util::responseData(200, '没有该用户');
+        }
+
+        $admin = User::where('token', $request->token)->first();
+        $user->status = $request->disable;
+        $option = $request->disable == 1 ? '启用' : '禁用';
+
+        if ($user->save()) {
+            return Util::responseData(1, $option.'成功');
+        }
+        else {
+            return Util::responseData(0, $option.'失败');
+        }
+    }
 }

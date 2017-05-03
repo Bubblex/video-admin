@@ -30,6 +30,8 @@ Route::group(['namespace' => 'Account'], function() {
         });
     });
 
+    Route::post('admin/login', 'UserController@adminLogin');
+
     Route::group(['middleware' => ['checkToken']], function() {
         // 获取用户完整信息
         Route::post('user/info', 'UserController@getUserInfo');
@@ -72,6 +74,12 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 获取文章评论
         Route::post('article/comment', 'UserController@getArticleComment');
+
+        // 后台用户列表页
+        Route::post('admin/user/list', 'UserController@getAdminUserList');
+
+        // 禁用用户
+        Route::post('admin/user/disable', 'UserController@disableUser');
     });
 
     // 获取用户基础数据
