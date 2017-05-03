@@ -1161,9 +1161,14 @@ class UserController extends Controller
             return Util::responseData(200, '没有该用户');
         }
 
+        $option = $request->disable == 1 ? '启用' : '禁用';
+
+        if ($user->role_id == 3) {
+            return Util::responseData(201, '您没有权限'.$option.'该用户');
+        }
+
         $admin = User::where('token', $request->token)->first();
         $user->status = $request->disable;
-        $option = $request->disable == 1 ? '启用' : '禁用';
 
         if ($user->save()) {
             return Util::responseData(1, $option.'成功');
