@@ -1369,4 +1369,48 @@ class UserController extends Controller
             ]
         ]);
     }
+
+    public function userCertification(Request $request) {
+        $params = ['id', 'result'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $user = User::find($id);
+
+        if (!$user) {
+            return Util::responseData(200, '该用户不存在');
+        }
+
+        if ($user->status == 2) {
+            return Util::responseData(201, '该用户已禁用');
+        }
+
+        if ($user->authentication != 2) {
+            return Util::responseData(202, '该用户没有申请认证');
+        }
+
+        $result = $request->result;
+        $user->authentication = $result;
+
+        if ($result == 4) {
+            $user->role_id = 2;
+        }
+
+        if ($user->save()) {
+            $message = new Message;
+            $message->user_id = $id;
+            $message->title = $result == 3 ? '讲师认证失败' : '恭喜您已成功通过讲师认证';
+            $message->content = $request->content;
+            $message->save();
+            return Util::responseData(1, '操作成功');
+        }
+        else {
+            return Util::responseData(0, '操作失败');
+        }
+    }
 }
