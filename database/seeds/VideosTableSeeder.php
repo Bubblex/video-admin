@@ -11,34 +11,17 @@ class VideosTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('videos')->insert([
-            'title' => '视频标题1',
-            'author' => 1,
-            'cover' => '/',
-            'summary' => '视频封面',
-            'video_url' => '/',
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
-
-        DB::table('videos')->insert([
-            'title' => '视频标题2',
-            'author' => 1,
-            'cover' => '/',
-            'summary' => '视频封面',
-            'video_url' => '/',
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
-
-        DB::table('videos')->insert([
-            'title' => '视频标题3',
-            'author' => 1,
-            'cover' => '/',
-            'summary' => '视频封面',
-            'video_url' => '/',
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
+        for ($i = 1; $i <= 50; $i++) {
+            DB::table('videos')->insert([
+                'title' => '视频标题'.$i,
+                'author' => rand(1, 50),
+                'cover' => '/'.$i,
+                'summary' => '视频简介'.$i,
+                'video_url' => '/视频地址'.$i,
+                'status' => rand(1, 2),
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ]);
+        }
     }
 }

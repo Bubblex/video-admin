@@ -86,6 +86,12 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 禁用 / 启用文章
         Route::post('admin/article/disable', 'UserController@disableArticle');
+
+        // 获取视频列表
+        Route::post('admin/video/list', 'UserController@getAdminVideoList');
+
+        // 禁用 / 启用文章
+        Route::post('admin/video/disable', 'UserController@disableVideo');
     });
 
     // 获取用户基础数据

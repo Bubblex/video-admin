@@ -1259,4 +1259,79 @@ class UserController extends Controller
             return Util::responseData(0, $option.'失败');
         }
     }
+
+    /**
+     * 获取视频列表
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getAdminVideoList(Request $request) {
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 6;
+        $filter = $request->filter;
+        $videos = null;
+
+        if ($filter) {
+            $videos = Video::where('status', '<>', 3)
+                ->where(function($query) use ($filter) {
+                    $query->where('title', 'like', '%'.$filter.'%')
+                        ->orWhere('summary', 'like', '%'.$filter.'%')
+                        ->orWhere('id', $filter);
+                })
+                ->with(['videoAuthor' => function($query) {
+                    $query->select('id', 'nickname');
+                }])
+                ->paginate($pageSize);
+        }
+        else {
+            $videos = Video::where('status', '<>', 3)
+                ->with(['videoAuthor' => function($query) {
+                    $query->select('id', 'nickname');
+                }])
+                ->paginate($pageSize);
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $videos->all(),
+            'pagination' => [
+                'total' => $videos->total(),
+                'current' => $videos->currentPage(),
+                'pageSize' => $videos->perPage()
+            ]
+        ]);
+    }
+
+    /**
+     * 禁用 / 启用视频
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function disableVideo(Request $request) {
+        $params = ['id', 'disable'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $option = '';
+        $video = Video::find($request->id);
+
+        if (!$video) {
+            return Util::responseData(200, '没有该视频');
+        }
+
+        $option = $request->disable == 1 ? '启用' : '禁用';
+        $admin = User::where('token', $request->token)->first();
+        $video->status = $request->disable;
+
+        if ($video->save()) {
+            return Util::responseData(1, $option.'成功');
+        }
+        else {
+            return Util::responseData(0, $option.'失败');
+        }
+    }
 }
