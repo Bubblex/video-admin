@@ -1145,6 +1145,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 禁用 / 启用用户
+     *
+     * @param Request $request
+     * @return void
+     */
     public function disableUser(Request $request) {
         $params = ['id', 'disable'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -1171,6 +1177,76 @@ class UserController extends Controller
         $user->status = $request->disable;
 
         if ($user->save()) {
+            return Util::responseData(1, $option.'成功');
+        }
+        else {
+            return Util::responseData(0, $option.'失败');
+        }
+    }
+
+    /**
+     * 获取文章列表
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getAdminArticleList(Request $request) {
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 6;
+        $filter = $request->filter;
+        $articles = null;
+
+        if ($filter) {
+            $articles = Article::where('status', '<>', 3)
+                ->where(function($query) use ($filter) {
+                    $query->where('title', 'like', '%'.$filter.'%')
+                        ->orWhere('content', 'like', '%'.$filter.'%')
+                        ->orWhere('summary', 'like', '%'.$filter.'%')
+                        ->orWhere('id', $filter);
+                })
+                ->with(['articleAuthor' => function($query) {
+                    $query->select('id', 'nickname');
+                }, 'type'])
+                ->paginate($pageSize);
+        }
+        else {
+            $articles = Article::where('status', '<>', 3)
+                ->with(['articleAuthor' => function($query) {
+                    $query->select('id', 'nickname');
+                }, 'type'])
+                ->paginate($pageSize);
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $articles->all(),
+            'pagination' => [
+                'total' => $articles->total(),
+                'current' => $articles->currentPage(),
+                'pageSize' => $articles->perPage()
+            ]
+        ]);
+    }
+
+    public function disableArticle(Request $request) {
+        $params = ['id', 'disable'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $option = '';
+        $article = Article::find($request->id);
+
+        if (!$article) {
+            return Util::responseData(200, '该文章不存在');
+        }
+
+        $option = $request->disable == 1 ? '启用' : '禁用';
+        $admin = User::where('token', $request->token)->first();
+        $article->status = $request->disable;
+
+        if ($article->save()) {
             return Util::responseData(1, $option.'成功');
         }
         else {

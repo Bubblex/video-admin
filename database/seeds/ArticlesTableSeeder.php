@@ -11,52 +11,19 @@ class ArticlesTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('articles')->insert([
-            'title' => '文章标题',
-            'author' => 1,
-            'cover' => '/',
-            'summary' => '文章简介',
-            'content' => '文章内容',
-            'type_id' => 1,
-            'read_num' => 100,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
-
-        DB::table('articles')->insert([
-            'title' => '文章标题2',
-            'author' => 1,
-            'cover' => '/',
-            'summary' => '文章简介',
-            'content' => '文章内容',
-            'type_id' => 2,
-            'read_num' => 100,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
-
-        DB::table('articles')->insert([
-            'title' => '文章标题3',
-            'author' => 2,
-            'cover' => '/',
-            'summary' => '文章简介',
-            'content' => '文章内容',
-            'type_id' => 1,
-            'read_num' => 100,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
-
-        DB::table('articles')->insert([
-            'title' => '文章标题4',
-            'author' => 2,
-            'cover' => '/',
-            'summary' => '文章简介',
-            'content' => '文章内容',
-            'type_id' => 1,
-            'read_num' => 100,
-            'created_at' => date("Y-m-d H:i:s"),
-            'updated_at' => date("Y-m-d H:i:s"),
-        ]);
+        for ($i = 1; $i <= 50; $i++) {
+            DB::table('articles')->insert([
+                'title' => '文章标题'.$i,
+                'author' => rand(1, 50),
+                'cover' => '/',
+                'summary' => '文章简介'.$i,
+                'content' => '文章内容'.$i,
+                'type_id' => rand(1, 3),
+                'read_num' => rand(1, 10000),
+                'status' => rand(1, 2),
+                'created_at' => date("Y-m-d H:i:s"),
+                'updated_at' => date("Y-m-d H:i:s"),
+            ]);
+        }
     }
 }

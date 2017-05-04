@@ -78,8 +78,14 @@ Route::group(['namespace' => 'Account'], function() {
         // 后台用户列表页
         Route::post('admin/user/list', 'UserController@getAdminUserList');
 
-        // 禁用用户
+        // 禁用 / 启用用户
         Route::post('admin/user/disable', 'UserController@disableUser');
+
+        // 获取文章列表
+        Route::post('admin/article/list', 'UserController@getAdminArticleList');
+
+        // 禁用 / 启用文章
+        Route::post('admin/article/disable', 'UserController@disableArticle');
     });
 
     // 获取用户基础数据
