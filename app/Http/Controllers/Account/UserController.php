@@ -1125,11 +1125,13 @@ class UserController extends Controller
         $user = null;
 
         if ($filter) {
-            $users = User::where('status', '<>', 3)->where(function($query) use ($filter) {
+            $users = User::where('status', '<>', 3)
+            ->where(function($query) use ($filter) {
                 $query->where('account', 'like', '%'.$filter.'%')
                     ->orWhere('nickname', 'like', '%'.$filter.'%')
                     ->orWhere('id', $filter);
-            })->with('role')->paginate($pageSize);
+            })
+            ->with('role')->paginate($pageSize);
         }
         else {
             $users = User::where('status', '<>', 3)->with('role')->paginate($pageSize);
@@ -1333,5 +1335,38 @@ class UserController extends Controller
         else {
             return Util::responseData(0, $option.'失败');
         }
+    }
+
+    public function userCertificationList(Request $request) {
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 6;
+        $filter = $request->filter;
+        $users = null;
+
+        if ($filter) {
+            $users = User::where('authentication', 2)
+                ->where(function($query) use ($filter) {
+                    $query->where('account', 'like', '%'.$filter.'%')
+                        ->orWhere('nickname', 'like', '%'.$filter.'%')
+                        ->orWhere('id', $filter);
+                })
+                ->where('status', 1)
+                ->where('role_id', 1)
+                ->paginate($pageSize);
+        }
+        else {
+            $users = User::where('authentication', 2)
+                ->where('status', 1)
+                ->where('role_id', 1)
+                ->paginate($pageSize);
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $users->all(),
+            'pagination' => [
+                'total' => $users->total(),
+                'current' => $users->currentPage(),
+                'pageSize' => $users->perPage()
+            ]
+        ]);
     }
 }

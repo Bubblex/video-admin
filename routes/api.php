@@ -92,6 +92,12 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 禁用 / 启用文章
         Route::post('admin/video/disable', 'UserController@disableVideo');
+
+        // 获取待认证讲师列表
+        Route::post('admin/user/certification/list', 'UserController@userCertificationList');
+
+        // 认证讲师
+        Route::post('admin/user/certification', 'UserController@userCertification');
     });
 
     // 获取用户基础数据

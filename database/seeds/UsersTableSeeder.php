@@ -45,6 +45,7 @@ class UsersTableSeeder extends Seeder
                 'nickname' => '梦及深海'.$i,
                 'summary' => '我是简介',
                 'password' => md5('123456'),
+                'authentication' => rand(1, 4),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);
@@ -54,6 +55,7 @@ class UsersTableSeeder extends Seeder
                 'nickname' => '贾维斯'.$i,
                 'summary' => '我是简介',
                 'password' => md5('123456'),
+                'authentication' => rand(1, 4),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);
@@ -63,6 +65,7 @@ class UsersTableSeeder extends Seeder
                 'nickname' => '管理员'.$i,
                 'summary' => '我是简介',
                 'password' => md5('123456'),
+                'authentication' => rand(1, 4),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
                 'role_id' => 3
