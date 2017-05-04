@@ -1226,6 +1226,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 启用 / 禁用文章
+     *
+     * @param Request $request
+     * @return void
+     */
     public function disableArticle(Request $request) {
         $params = ['id', 'disable'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
