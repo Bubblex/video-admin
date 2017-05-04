@@ -18,7 +18,7 @@ class VideosTableSeeder extends Seeder
                 'cover' => '/'.$i,
                 'summary' => '视频简介'.$i,
                 'video_url' => '/视频地址'.$i,
-                'status' => rand(1, 2),
+                'status' => rand(1, 5),
                 'created_at' => date("Y-m-d H:i:s"),
                 'updated_at' => date("Y-m-d H:i:s"),
             ]);

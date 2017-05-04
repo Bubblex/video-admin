@@ -1404,7 +1404,81 @@ class UserController extends Controller
         if ($user->save()) {
             $message = new Message;
             $message->user_id = $id;
-            $message->title = $result == 3 ? '讲师认证失败' : '恭喜您已成功通过讲师认证';
+            $message->title = $result == 3 ? '您没有通过讲师认证' : '恭喜您已成功通过讲师认证';
+            $message->content = $request->content;
+            $message->save();
+            return Util::responseData(1, '操作成功');
+        }
+        else {
+            return Util::responseData(0, '操作失败');
+        }
+    }
+
+    public function getVideoReviewList(Request $request) {
+        
+        $pageSize = $request->pageSize ? (int) $request->pageSize : 6;
+        $filter = $request->filter;
+        $videos = null;
+
+        if ($filter) {
+            $videos = Video::where('status', '<>', 3)
+                ->where(function($query) use ($filter) {
+                    $query->where('title', 'like', '%'.$filter.'%')
+                        ->orWhere('summary', 'like', '%'.$filter.'%')
+                        ->orWhere('id', $filter);
+                })
+                ->where('status', 4)
+                ->with(['videoAuthor' => function($query) {
+                    $query->select('id', 'nickname');
+                }])
+                ->paginate($pageSize);
+        }
+        else {
+            $videos = Video::where('status', '<>', 3)
+                ->where('status', 4)
+                ->with(['videoAuthor' => function($query) {
+                    $query->select('id', 'nickname');
+                }])
+                ->paginate($pageSize);
+        }
+
+        return Util::responseData(1, '查询成功', [
+            'list' => $videos->all(),
+            'pagination' => [
+                'total' => $videos->total(),
+                'current' => $videos->currentPage(),
+                'pageSize' => $videos->perPage()
+            ]
+        ]);
+    }
+
+    public function reviewVideo(Request $request) {
+        $params = ['id', 'result'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $id = $request->id;
+        $video = Video::find($id);
+
+        if (!$video) {
+            return Util::responseData(200, '该视频不存在');
+        }
+
+        if ($video->status != 4) {
+            return Util::responseData(201, '该视频不在待审核状态');
+        }
+
+        $result = $request->result;
+        $video->status = 5;
+
+        if ($video->save()) {
+            $message = new Message;
+            $message->user_id = $video->author;
+            $message->title = $result == 5 ? '您的视频未通过审核' : '您的视频已通过审核';
             $message->content = $request->content;
             $message->save();
             return Util::responseData(1, '操作成功');

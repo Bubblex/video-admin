@@ -98,6 +98,12 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 认证讲师
         Route::post('admin/user/certification', 'UserController@userCertification');
+
+        // 获取待审核的视频列表
+        Route::post('admin/video/review/list', 'UserController@getVideoReviewList');
+
+        // 审核视频
+        Route::post('admin/video/review', 'UserController@reviewVideo');
     });
 
     // 获取用户基础数据
