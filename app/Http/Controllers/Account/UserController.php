@@ -1370,6 +1370,12 @@ class UserController extends Controller
         ]);
     }
 
+    /**
+     * 审核用户
+     *
+     * @param Request $request
+     * @return void
+     */
     public function userCertification(Request $request) {
         $params = ['id', 'result'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -1415,27 +1421,24 @@ class UserController extends Controller
     }
 
     public function getVideoReviewList(Request $request) {
-        
         $pageSize = $request->pageSize ? (int) $request->pageSize : 6;
         $filter = $request->filter;
         $videos = null;
 
         if ($filter) {
-            $videos = Video::where('status', '<>', 3)
+            $videos = Video::where('status', 4)
                 ->where(function($query) use ($filter) {
                     $query->where('title', 'like', '%'.$filter.'%')
                         ->orWhere('summary', 'like', '%'.$filter.'%')
                         ->orWhere('id', $filter);
                 })
-                ->where('status', 4)
                 ->with(['videoAuthor' => function($query) {
                     $query->select('id', 'nickname');
                 }])
                 ->paginate($pageSize);
         }
         else {
-            $videos = Video::where('status', '<>', 3)
-                ->where('status', 4)
+            $videos = Video::where('status', 4)
                 ->with(['videoAuthor' => function($query) {
                     $query->select('id', 'nickname');
                 }])
@@ -1473,7 +1476,7 @@ class UserController extends Controller
         }
 
         $result = $request->result;
-        $video->status = 5;
+        $video->status = $result;
 
         if ($video->save()) {
             $message = new Message;
