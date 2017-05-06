@@ -41,6 +41,10 @@ class User extends Model
         return $this->hasMany('App\Models\Article', 'author');
     }
 
+    public function userVideos() {
+        return $this->hasMany('App\Models\Video', 'author');
+    }
+
     public function collectArticles() {
         return $this->belongsToMany('App\Models\Article', 'collects', 'user_id', 'article_id')->withPivot('id');
     }

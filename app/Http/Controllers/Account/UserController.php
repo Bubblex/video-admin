@@ -606,7 +606,16 @@ class UserController extends Controller
         }
 
         $id = $request->id;
-        $article = Article::where('id', $id)->first();
+        $article = Article::with('articleAuthor')
+            ->with(['articleAuthor' => function($query) {
+                $query->select('id', 'nickname', 'avatar')
+                    ->withCount('userArticles')
+                    ->withCount('userFollowers')
+                    ->withCount('userVideos')
+                    ->get();
+            }])
+            ->withCount('collects')
+            ->find($id);
 
         if (!$article) {
             return Util::responseData(200, '没有该文章');
@@ -620,12 +629,23 @@ class UserController extends Controller
             return Util::responseData(202, '该文章已删除');
         }
 
+        $user = User::where('token', $request->token)->first();
+        $isCollect = 2;
+
+        if ($user) {
+            if ($user->id === $article->author) {
+                $isCollect = 0;
+            }
+
+            if ($user->collectArticles()->find($id)) {
+                $isCollect = 1;
+            }
+        }
+
         $article->read_num = $article->read_num + 1;
         $article->save();
 
-        $article['author'] = collect($article->articleAuthor)->only(['id', 'nickname', 'avatar']);
-        $article['article_type'] = collect($article->type);
-        return Util::responseData(1, '查询成功', collect($article)->forget(['article_author', 'article_type']));
+        return Util::responseData(1, '查询成功', collect($article)->put('is_collect', $isCollect));
     }
 
     /**
