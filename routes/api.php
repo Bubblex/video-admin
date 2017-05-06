@@ -138,4 +138,7 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 获取视频详情
     Route::post('video/detail', 'UserController@getVideoDetail');
+
+    // 获取推荐用户
+    Route::post('user/recommend', 'UserController@getCommendUser');
 });

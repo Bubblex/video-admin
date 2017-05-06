@@ -302,6 +302,41 @@ class UserController extends Controller
     }
 
     /**
+     * 获取推荐的用户
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function getCommendUser(Request $request) {
+        $users = User::withCount('userArticles')
+            ->orderBy('user_articles_count', 'desc')
+            ->take(8)
+            ->get()
+            ->map(function($user) {
+                return [
+                    'id' => $user->id,
+                    'account' => $user->account,
+                    'nickname' => $user->nickname,
+                    'avatar' => $user->avatar,
+                    'summary' => $user->summary,
+                    'role_id' => $user->role_id,
+                    'role_name' => $user->role->role_name,
+                    'status' => $user->status,
+                    'created_at' => date($user->created_at),
+
+                    'articles_num' => $user->articles->count(),
+                    'videos_num' => $user->videos->count(),
+                    'stars_num' => $user->stars->count(),
+                    'followers_num' => $user->followers->count(),
+                    'collect_articles_num'=> $user->collectArticles->count(),
+                    'collect_videos_num'=> $user->collectVideos->count()
+                ];
+            });
+
+        return Util::responseData(1, '查询成功', $users);
+    }
+
+    /**
      * 修改用户资料
      *
      * @param Request $request
