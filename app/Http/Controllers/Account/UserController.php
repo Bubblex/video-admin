@@ -774,6 +774,34 @@ class UserController extends Controller
         }
     }
 
+    public function deleteArticle(Request $request) {
+        $params = ['token', 'id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $article = Article::find($request->id);
+
+        if (!$article) {
+            return Util::responseData(200, '文章不存在');
+        }
+
+        $user = User::where('token', $request->token)->first();
+
+        if ($article->author != $user->id) {
+            return Util::responseData(201, '您没有权限删除别人的文章');
+        }
+
+        $article->status = 3;
+        $article->save();
+        $article->delete();
+
+        return Util::responseData(1, '删除成功');
+    }
+
     /**
      * 获取视频列表
      *
@@ -1001,6 +1029,34 @@ class UserController extends Controller
         else {
             return Util::responseData(0, $errmsg);
         }
+    }
+
+    public function deleteVideo(Request $request) {
+        $params = ['token', 'id'];
+        $checkParamsResult = Util::checkParams($request->all(), $params);
+
+        // 检测必填参数
+        if ($checkParamsResult) {
+            return Util::responseData(300, $checkParamsResult);
+        }
+
+        $video = Video::find($request->id);
+
+        if (!$video) {
+            return Util::responseData(200, '视频不存在');
+        }
+
+        $user = User::where('token', $request->token)->first();
+
+        if ($video->author != $user->id) {
+            return Util::responseData(201, '您没有权限删除别人的视频');
+        }
+
+        $video->status = 3;
+        $video->save();
+        $video->delete();
+
+        return Util::responseData(1, '删除成功');
     }
 
     public function getMessageList(Request $request) {

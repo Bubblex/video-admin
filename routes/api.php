@@ -48,6 +48,9 @@ Route::group(['namespace' => 'Account'], function() {
         // 发布 / 修改文章
         Route::post('article/release', 'UserController@releaseArticle');
 
+        // 删除文章
+        Route::post('article/delete', 'UserController@deleteArticle');
+
         // 收藏视频
         Route::post('video/collect', 'UserController@collectVideo');
 
@@ -56,6 +59,9 @@ Route::group(['namespace' => 'Account'], function() {
 
         // 发布 / 修改视频
         Route::post('video/release', 'UserController@releaseVideo');
+
+        // 删除视频
+        Route::post('video/delete', 'UserController@deleteVideo');
 
         // 获取用户消息列表
         Route::post('message/list', 'UserController@getMessageList');
