@@ -559,26 +559,26 @@ class UserController extends Controller
             }
 
             if ($article_type) {
-                $articles = $user->collectArticles()->where('type_id', $article_type)->where('type', 1)->orderBy('collects.id', 'desc')->paginate($pageSize);
+                $articles = $user->collectArticles()->where('type_id', $article_type)->where('type', 1)->orderBy('collects.id', 'desc')->withCount('collects')->paginate($pageSize);
             }
             else {
-                $articles = $user->collectArticles()->where('type', 1)->orderBy('collects.id', 'desc')->paginate($pageSize);
+                $articles = $user->collectArticles()->where('type', 1)->orderBy('collects.id', 'desc')->withCount('collects')->paginate($pageSize);
             }
         }
         else if ($id) {
             if ($article_type) {
-                $articles = Article::where('author', $id)->where('type_id', $article_type)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('author', $id)->where('type_id', $article_type)->where('status', 1)->withCount('collects')->orderBy('id', 'desc')->paginate($pageSize);
             }
             else {
-                $articles = Article::where('author', $id)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('author', $id)->where('status', 1)->orderBy('id', 'desc')->withCount('collects')->paginate($pageSize);
             }
         }
         else {
             if ($article_type) {
-                $articles = Article::where('type_id', $article_type)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('type_id', $article_type)->where('status', 1)->withCount('collects')->orderBy('id', 'desc')->paginate($pageSize);
             }
             else {
-                $articles = Article::where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+                $articles = Article::where('status', 1)->orderBy('id', 'desc')->withCount('collects')->paginate($pageSize);
             }
         }
 
@@ -837,14 +837,14 @@ class UserController extends Controller
                     return Util::responseData(201, '用户不存在');
                 }
 
-                $videos = $user->collectVideos()->where('type', 2)->orderBy('collects.id', 'desc')->paginate($pageSize);
+                $videos = $user->collectVideos()->where('type', 2)->withCount('collects')->orderBy('collects.id', 'desc')->paginate($pageSize);
             }
             else {
-                $videos = Video::where('author', $id)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+                $videos = Video::where('author', $id)->where('status', 1)->withCount('collects')->orderBy('id', 'desc')->paginate($pageSize);
             }
         }
         else {
-            $videos = Video::where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
+            $videos = Video::where('status', 1)->orderBy('id', 'desc')->withCount('collects')->paginate($pageSize);
         }
 
         return Util::responseData(1, '查询成功', [
