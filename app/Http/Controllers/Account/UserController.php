@@ -83,6 +83,10 @@ class UserController extends Controller
             return Util::responseData(203, '用户不存在');
         }
 
+        if ($user->role_id === 3) {
+            return Util::responseData(205, '您的身份不能登录该平台');
+        }
+
         // 密码不一致
         if ($user->password != $password) {
             return Util::responseData(204, '用户名或密码错误');
