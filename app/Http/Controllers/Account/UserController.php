@@ -345,7 +345,6 @@ class UserController extends Controller
 
             'articles_num' => $user->articles->count(),
             'videos_num' => $user->videos->count(),
-            // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
             'followers_num' => $user->stars->count()
         ]);
@@ -552,15 +551,23 @@ class UserController extends Controller
 
         $articles;
 
-        if ($id) {
-            if ($type == 2) {
-                $user = User::where('id', $id)->first();
+        if ($id && $type == 2) {
+            $user = User::where('id', $id)->first();
 
-                if (!$user) {
-                    return Util::responseData(201, '用户不存在');
-                }
+            if (!$user) {
+                return Util::responseData(201, '用户不存在');
+            }
 
+            if ($article_type) {
+                $articles = $user->collectArticles()->where('type_id', $article_type)->where('type', 1)->orderBy('collects.id', 'desc')->paginate($pageSize);
+            }
+            else {
                 $articles = $user->collectArticles()->where('type', 1)->orderBy('collects.id', 'desc')->paginate($pageSize);
+            }
+        }
+        else if ($id) {
+            if ($article_type) {
+                $articles = Article::where('author', $id)->where('type_id', $article_type)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
             }
             else {
                 $articles = Article::where('author', $id)->where('status', 1)->orderBy('id', 'desc')->paginate($pageSize);
@@ -774,6 +781,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * 删除文章
+     *
+     * @param Request $request
+     * @return void
+     */
     public function deleteArticle(Request $request) {
         $params = ['token', 'id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -1031,6 +1044,12 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * 删除视频
+     *
+     * @param Request $request
+     * @return void
+     */
     public function deleteVideo(Request $request) {
         $params = ['token', 'id'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
@@ -1059,6 +1078,12 @@ class UserController extends Controller
         return Util::responseData(1, '删除成功');
     }
 
+    /**
+     * 获取消息列表
+     *
+     * @param Request $request
+     * @return void
+     */
     public function getMessageList(Request $request) {
         $params = ['token'];
         $checkParamsResult = Util::checkParams($request->all(), $params);
