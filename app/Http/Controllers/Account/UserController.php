@@ -180,9 +180,10 @@ class UserController extends Controller
 
             'articles_num' => $user->articles->count(),
             'videos_num' => $user->videos->count(),
-            // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
             'followers_num' => $user->followers->count(),
+            'collect_articles_num'=> $user->collectArticles->count(),
+            'collect_videos_num'=> $user->collectVideos->count(),
 
             'is_follow' => 0
         ]);
@@ -291,9 +292,10 @@ class UserController extends Controller
 
             'articles_num' => $user->articles->count(),
             'videos_num' => $user->videos->count(),
-            // TODO: 结果有可能不准确，待测试
             'stars_num' => $user->stars->count(),
             'followers_num' => $user->followers->count(),
+            'collect_articles_num'=> $user->collectArticles->count(),
+            'collect_videos_num'=> $user->collectVideos->count(),
 
             'is_follow' => $is_follow
         ]);
