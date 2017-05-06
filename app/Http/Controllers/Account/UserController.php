@@ -606,8 +606,8 @@ class UserController extends Controller
         }
 
         $id = $request->id;
-        $article = Article::with('articleAuthor')
-            ->with(['articleAuthor' => function($query) {
+        $article = Article
+            ::with(['articleAuthor' => function($query) {
                 $query->select('id', 'nickname', 'avatar')
                     ->withCount('userArticles')
                     ->withCount('userFollowers')
@@ -835,7 +835,17 @@ class UserController extends Controller
             return Util::responseData(300, $checkParamsResult);
         }
 
-        $video = Video::find($request->id);
+        $id = $request->id;
+        $video = Video
+            ::with(['videoAuthor' => function($query) {
+                $query->select('id', 'nickname', 'avatar')
+                    ->withCount('userArticles')
+                    ->withCount('userFollowers')
+                    ->withCount('userVideos')
+                    ->get();
+            }])
+            ->withCount('collects')
+            ->find($id);
 
         if (!$video) {
             return Util::responseData(200, '没有该视频');
@@ -849,12 +859,23 @@ class UserController extends Controller
             return Util::responseData(202, '该视频已删除');
         }
 
+        $user = User::where('token', $request->token)->first();
+        $isCollect = 2;
+
+        if ($user) {
+            if ($user->id === $video->author) {
+                $isCollect = 0;
+            }
+
+            if ($user->collectVideos()->find($id)) {
+                $isCollect = 1;
+            }
+        }
+
         $video->play_num = $video->play_num + 1;
         $video->save();
 
-        $video['author'] = collect($video->videoAuthor)->only(['id', 'nickname', 'avatar']);
-
-        return Util::responseData(1, '查询成功', collect($video)->forget(['video_author']));
+        return Util::responseData(1, '查询成功', collect($video)->put('is_collect', $isCollect));
     }
 
     /**
