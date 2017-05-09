@@ -141,4 +141,7 @@ Route::group(['namespace' => 'Account'], function() {
 
     // 获取推荐用户
     Route::post('user/recommend', 'UserController@getCommendUser');
+
+    // 获取推荐讲师
+    Route::post('user/recommend/certification', 'UserController@getCommendUserCertification');
 });
