@@ -92,6 +92,10 @@ class UserController extends Controller
             return Util::responseData(204, '用户名或密码错误');
         }
 
+        if ($user->status != 1) {
+            return Util::responseData(206, '该用户已被禁用');
+        }
+
         $token = Util::generateToken();
         $user->token = $token;
         $user->save();
