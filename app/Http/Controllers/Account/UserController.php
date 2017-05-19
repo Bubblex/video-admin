@@ -348,6 +348,7 @@ class UserController extends Controller
      */
     public function getCommendUserCertification(Request $request) {
         $users = User::withCount('userVideos')
+            ->where('role_id', 2)
             ->orderBy('user_videos_count', 'desc')
             ->take(8)
             ->get()
