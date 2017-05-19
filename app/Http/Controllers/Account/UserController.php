@@ -901,12 +901,27 @@ class UserController extends Controller
     public function getVideoList(Request $request) {
         $id = $request->id;
         $type = $request->type;
+        $token = $request->token;
         $page = $request->page;
         $pageSize = $request->pageSize ? (int) $request->pageSize : 10;
 
         $videos;
 
-        if ($id) {
+        if ($token) {
+            $user = User::where('token', $token)->first();
+
+            if (!$user) {
+                return Util::responseData(100, '登录状态已过期，请重新登录');
+            }
+
+            $videos = Video::where('author', $user->id)
+                ->where('status', '<>', 2)
+                ->where('status', '<>', 3)
+                ->orderBy('id', 'desc')
+                ->withCount('collects')
+                ->paginate($pageSize);
+        }
+        else if ($id) {
             if ($type == 2) {
                 $user = User::where('id', $id)->first();
 
@@ -914,7 +929,11 @@ class UserController extends Controller
                     return Util::responseData(201, '用户不存在');
                 }
 
-                $videos = $user->collectVideos()->where('type', 2)->withCount('collects')->orderBy('collects.id', 'desc')->paginate($pageSize);
+                $videos = $user->collectVideos()
+                    ->where('type', 2)
+                    ->withCount('collects')
+                    ->orderBy('collects.id', 'desc')
+                    ->paginate($pageSize);
             }
             else {
                 $videos = Video::where('author', $id)->where('status', 1)->withCount('collects')->orderBy('id', 'desc')->paginate($pageSize);
